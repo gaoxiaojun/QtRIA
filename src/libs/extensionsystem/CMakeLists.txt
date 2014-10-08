@@ -1,0 +1,42 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+project(extensionsystem)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+file(GLOB LIB_SOURCES *.cpp)
+file(GLOB LIB_HEADERS *.h)
+file(GLOB LIB_FORMS *.ui)
+file(GLOB LIB_RESOURCES *.qrc)
+
+add_definitions(-DIDE_TEST_DIR="${PROJECT_SOURCE_DIR}")
+
+qt5_wrap_ui(LIB_FORMS_HEADERS ${LIB_FORMS})
+qt5_add_resources(LIB_RESOURCES_HEADERS ${LIB_RESOURCES})
+
+list(APPEND LIB_SOURCES
+        ${LIB_HEADERS}
+        ${LIB_FORMS_HEADERS}
+        ${LIB_RESOURCES_HEADERS}
+)
+
+include_directories(${aggregation_INCLUDE_DIRS} ${utils_INCLUDE_DIRS})
+
+set(TARGET_LIBRARIES
+    ${aggregation_LIBRARIES}
+    ${utils_LIBRARIES}
+    Qt5::Widgets
+    Qt5::Core
+)
+
+add_library(${PROJECT_NAME} SHARED ${LIB_SOURCES})
+target_link_libraries(${PROJECT_NAME} ${TARGET_LIBRARIES})
+
+get_filename_component(PARENT_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
+set(${PROJECT_NAME}_INCLUDE_DIRS ${PARENT_DIR} CACHE INTERNAL "${PROJECT_NAME}_include" FORCE)
+set(${PROJECT_NAME}_LIBRARIES ${PROJECT_NAME} CACHE INTERNAL "${PROJECT_NAME}_library" FORCE)
+
+install(TARGETS ${PROJECT_NAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+)

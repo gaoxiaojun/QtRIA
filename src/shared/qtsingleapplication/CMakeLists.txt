@@ -1,0 +1,28 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+project(qtsingleapplication)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+file(GLOB LIB_${PROJECT_NAME}_SOURCES *.cpp)
+
+include_directories(${qtlockedfile_INCLUDE_DIRS})
+
+list(APPEND ${PROJECT_NAME}_TARGET_LIBRARIES
+    ${qtlockedfile_LIBRARIES}
+    Qt5::Core
+    Qt5::Widgets
+    Qt5::Network
+)
+
+add_library(${PROJECT_NAME} STATIC ${LIB_${PROJECT_NAME}_SOURCES})
+
+target_link_libraries(${PROJECT_NAME} ${${PROJECT_NAME}_TARGET_LIBRARIES})
+
+set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR} CACHE INTERNAL "${PROJECT_NAME}_include" FORCE)
+set(${PROJECT_NAME}_LIBRARIES ${PROJECT_NAME}_static CACHE INTERNAL "${PROJECT_NAME}_static_library" FORCE)
+
+install(TARGETS ${PROJECT_NAME}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+)

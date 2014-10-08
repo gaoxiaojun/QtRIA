@@ -1,0 +1,10 @@
+cmake_minimum_required (VERSION 3.0 FATAL_ERROR)
+
+project (resource)
+
+file(COPY generic-highlighter DESTINATION ${APPLICATION_DATA_DIR})
+file(COPY snippets DESTINATION ${APPLICATION_DATA_DIR})
+file(COPY styles DESTINATION ${APPLICATION_DATA_DIR})
+file(COPY templates DESTINATION ${APPLICATION_DATA_DIR})
+file(COPY welcomescreen DESTINATION ${APPLICATION_DATA_DIR})
+file(COPY scripts DESTINATION ${APPLICATION_DATA_DIR})

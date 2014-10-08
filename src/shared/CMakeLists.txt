@@ -1,0 +1,3 @@
+add_subdirectory(qtlockedfile)
+add_subdirectory(qtsingleapplication)
+#add_subdirectory(help)
