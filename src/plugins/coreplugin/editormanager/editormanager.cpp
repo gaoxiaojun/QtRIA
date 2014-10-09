@@ -41,7 +41,6 @@
 #include <coreplugin/dialogs/readonlyfilesdialog.h>
 #include <coreplugin/documentmanager.h>
 #include <coreplugin/editormanager/ieditorfactory.h>
-#include <coreplugin/editormanager/iexternaleditor.h>
 #include <coreplugin/editortoolbar.h>
 #include <coreplugin/fileutils.h>
 #include <coreplugin/findplaceholder.h>
@@ -192,7 +191,7 @@ public:
     QAction *m_closeOtherEditorsContextAction;
     QAction *m_closeAllEditorsExceptVisibleContextAction;
     QAction *m_openGraphicalShellAction;
-    QAction *m_openTerminalAction;
+    //QAction *m_openTerminalAction;
     QAction *m_findInDirectoryAction;
     DocumentModel::Entry *m_contextMenuEntry;
 
@@ -233,7 +232,7 @@ EditorManagerPrivate::EditorManagerPrivate(QWidget *parent) :
     m_closeOtherEditorsContextAction(new QAction(EditorManager::tr("Close Others"), parent)),
     m_closeAllEditorsExceptVisibleContextAction(new QAction(EditorManager::tr("Close All Except Visible"), parent)),
     m_openGraphicalShellAction(new QAction(FileUtils::msgGraphicalShellAction(), parent)),
-    m_openTerminalAction(new QAction(FileUtils::msgTerminalAction(), parent)),
+    //m_openTerminalAction(new QAction(FileUtils::msgTerminalAction(), parent)),
     m_findInDirectoryAction(new QAction(FileUtils::msgFindInDirectory(), parent)),
     m_windowPopup(0),
     m_coreListener(0),
@@ -340,7 +339,7 @@ EditorManager::EditorManager(QWidget *parent) :
     connect(d->m_closeAllEditorsExceptVisibleContextAction, SIGNAL(triggered()), this, SLOT(closeAllEditorsExceptVisible()));
 
     connect(d->m_openGraphicalShellAction, SIGNAL(triggered()), this, SLOT(showInGraphicalShell()));
-    connect(d->m_openTerminalAction, SIGNAL(triggered()), this, SLOT(openTerminal()));
+    //connect(d->m_openTerminalAction, SIGNAL(triggered()), this, SLOT(openTerminal()));
     connect(d->m_findInDirectoryAction, SIGNAL(triggered()), this, SLOT(findInDirectory()));
 
     // Goto Previous In History Action
@@ -834,10 +833,10 @@ void EditorManager::addNativeDirAndOpenWithActions(QMenu *contextMenu, DocumentM
     QTC_ASSERT(contextMenu, return);
     bool enabled = entry && !entry->fileName().isEmpty();
     d->m_openGraphicalShellAction->setEnabled(enabled);
-    d->m_openTerminalAction->setEnabled(enabled);
+    //d->m_openTerminalAction->setEnabled(enabled);
     d->m_findInDirectoryAction->setEnabled(enabled);
     contextMenu->addAction(d->m_openGraphicalShellAction);
-    contextMenu->addAction(d->m_openTerminalAction);
+    //contextMenu->addAction(d->m_openTerminalAction);
     contextMenu->addAction(d->m_findInDirectoryAction);
     QMenu *openWith = contextMenu->addMenu(tr("Open With"));
     connect(openWith, SIGNAL(triggered(QAction*)),
@@ -986,13 +985,6 @@ void EditorManager::showInGraphicalShell()
     if (!d->m_contextMenuEntry || d->m_contextMenuEntry->fileName().isEmpty())
         return;
     Core::FileUtils::showInGraphicalShell(ICore::mainWindow(), d->m_contextMenuEntry->fileName());
-}
-
-void EditorManager::openTerminal()
-{
-    if (!d->m_contextMenuEntry || d->m_contextMenuEntry->fileName().isEmpty())
-        return;
-    Core::FileUtils::openTerminal(QFileInfo(d->m_contextMenuEntry->fileName()).path());
 }
 
 void EditorManager::findInDirectory()
@@ -1394,7 +1386,7 @@ EditorManager::EditorFactoryList
     return rc;
 }
 
-EditorManager::ExternalEditorList
+/*EditorManager::ExternalEditorList
         EditorManager::externalEditors(const MimeType &mimeType, bool bestMatchOnly)
 {
     ExternalEditorList rc;
@@ -1403,7 +1395,7 @@ EditorManager::ExternalEditorList
     if (debugEditorManager)
         qDebug() << Q_FUNC_INFO << mimeType.type() << " returns " << rc;
     return rc;
-}
+}*/
 
 /* For something that has a 'QString id' (IEditorFactory
  * or IExternalEditor), find the one matching a id. */
@@ -1477,8 +1469,8 @@ void EditorManager::addEditor(IEditor *editor)
 
 // Run the OpenWithDialog and return the editor id
 // selected by the user.
-Core::Id EditorManager::getOpenWithEditorId(const QString &fileName,
-                                           bool *isExternalEditor)
+Core::Id EditorManager::getOpenWithEditorId(const QString &fileName)//,
+                                           //bool *isExternalEditor)
 {
     // Collect editors that can open the file
     MimeType mt = MimeDatabase::findByFile(fileName);
@@ -1496,13 +1488,13 @@ Core::Id EditorManager::getOpenWithEditorId(const QString &fileName,
         allEditorDisplayNames.push_back(editors.at(i)->displayName());
     }
     // External editors
-    const ExternalEditorList exEditors = externalEditors(mt, false);
+    /*const ExternalEditorList exEditors = externalEditors(mt, false);
     const int esize = exEditors.size();
     for (int i = 0; i < esize; i++) {
         externalEditorIds.push_back(exEditors.at(i)->id());
         allEditorIds.push_back(exEditors.at(i)->id());
         allEditorDisplayNames.push_back(exEditors.at(i)->displayName());
-    }
+    }*/
     if (allEditorIds.empty())
         return Id();
     QTC_ASSERT(allEditorIds.size() == allEditorDisplayNames.size(), return Id());
@@ -1513,8 +1505,8 @@ Core::Id EditorManager::getOpenWithEditorId(const QString &fileName,
     if (dialog.exec() != QDialog::Accepted)
         return Id();
     const Id selectedId = allEditorIds.at(dialog.editor());
-    if (isExternalEditor)
-        *isExternalEditor = externalEditorIds.contains(selectedId);
+    /*if (isExternalEditor)
+        *isExternalEditor = externalEditorIds.contains(selectedId);*/
     return selectedId;
 }
 
@@ -1669,7 +1661,7 @@ IEditor *EditorManager::openEditor(Core::Internal::EditorView *view, const QStri
     return result;
 }
 
-bool EditorManager::openExternalEditor(const QString &fileName, Core::Id editorId)
+/*bool EditorManager::openExternalEditor(const QString &fileName, Core::Id editorId)
 {
     IExternalEditor *ee = findById<IExternalEditor>(editorId);
     if (!ee)
@@ -1681,7 +1673,7 @@ bool EditorManager::openExternalEditor(const QString &fileName, Core::Id editorI
     if (!ok)
         QMessageBox::critical(ICore::mainWindow(), tr("Opening File"), errorMessage);
     return ok;
-}
+}*/
 
 QStringList EditorManager::getOpenFileNames()
 {

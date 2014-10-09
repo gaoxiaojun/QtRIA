@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Package>
+  <DisplayName>QForex</DisplayName>
+  <Description>Installs the QForex IDE.</Description>
+  <Version>{version}</Version>
+  <ReleaseDate>{date}</ReleaseDate>
+  <Name>org.qtproject.qtcreator</Name>
+  <!--  <Script>installscript.js</Script> -->
+</Package>

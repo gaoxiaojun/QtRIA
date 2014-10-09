@@ -113,7 +113,7 @@ QWidget *GeneralSettings::widget()
 
         m_page->colorButton->setColor(StyleHelper::requestedBaseColor());
         m_page->reloadBehavior->setCurrentIndex(EditorManager::reloadSetting());
-        if (HostOsInfo::isAnyUnixHost()) {
+        /*if (HostOsInfo::isAnyUnixHost()) {
             const QStringList availableTerminals = ConsoleProcess::availableTerminalEmulators();
             const QString currentTerminal = ConsoleProcess::terminalEmulator(ICore::settings(), false);
             m_page->terminalComboBox->addItems(availableTerminals);
@@ -123,7 +123,7 @@ QWidget *GeneralSettings::widget()
             m_page->terminalLabel->hide();
             m_page->terminalComboBox->hide();
             m_page->resetTerminalButton->hide();
-        }
+        }*/
 
         if (HostOsInfo::isAnyUnixHost() && !HostOsInfo::isMacHost()) {
             m_page->externalFileBrowserEdit->setText(UnixUtils::fileBrowser(ICore::settings()));
@@ -144,7 +144,7 @@ QWidget *GeneralSettings::widget()
         connect(m_page->resetWarningsButton, SIGNAL(clicked()),
                 this, SLOT(resetWarnings()));
         if (HostOsInfo::isAnyUnixHost()) {
-            connect(m_page->resetTerminalButton, SIGNAL(clicked()), this, SLOT(resetTerminal()));
+            //connect(m_page->resetTerminalButton, SIGNAL(clicked()), this, SLOT(resetTerminal()));
             if (!HostOsInfo::isMacHost()) {
                 connect(m_page->resetFileBrowserButton, SIGNAL(clicked()), this, SLOT(resetFileBrowser()));
                 connect(m_page->helpExternalFileBrowserButton, SIGNAL(clicked()),
@@ -170,8 +170,8 @@ void GeneralSettings::apply()
     StyleHelper::setBaseColor(m_page->colorButton->color());
     EditorManager::setReloadSetting(IDocument::ReloadSetting(m_page->reloadBehavior->currentIndex()));
     if (HostOsInfo::isAnyUnixHost()) {
-        ConsoleProcess::setTerminalEmulator(ICore::settings(),
-                                            m_page->terminalComboBox->lineEdit()->text());
+        /*ConsoleProcess::setTerminalEmulator(ICore::settings(),
+                                            m_page->terminalComboBox->lineEdit()->text());*/
         if (!HostOsInfo::isMacHost()) {
             UnixUtils::setFileBrowser(ICore::settings(),
                                       m_page->externalFileBrowserEdit->text());
@@ -200,11 +200,11 @@ void GeneralSettings::resetWarnings()
     m_page->resetWarningsButton->setEnabled(false);
 }
 
-void GeneralSettings::resetTerminal()
+/*void GeneralSettings::resetTerminal()
 {
     if (HostOsInfo::isAnyUnixHost())
         m_page->terminalComboBox->lineEdit()->setText(QString());
-}
+}*/
 
 void GeneralSettings::resetFileBrowser()
 {

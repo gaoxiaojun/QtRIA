@@ -49,7 +49,7 @@ namespace Core {
 class IContext;
 class IEditor;
 class IEditorFactory;
-class IExternalEditor;
+//class IExternalEditor;
 class MimeType;
 class IDocument;
 class IMode;
@@ -91,7 +91,7 @@ class CORE_EXPORT EditorManager : public QWidget
 
 public:
     typedef QList<IEditorFactory *> EditorFactoryList;
-    typedef QList<IExternalEditor *> ExternalEditorList;
+    //typedef QList<IExternalEditor *> ExternalEditorList;
 
     static EditorManager *instance();
 
@@ -120,10 +120,10 @@ public:
     static IEditor *openEditor(Internal::EditorView *view, const QString &fileName,
         Id id = Id(), OpenEditorFlags flags = NoFlags, bool *newEditor = 0);
 
-    static bool openExternalEditor(const QString &fileName, Id editorId);
+    //static bool openExternalEditor(const QString &fileName, Id editorId);
 
     static QStringList getOpenFileNames();
-    static Id getOpenWithEditorId(const QString &fileName, bool *isExternalEditor = 0);
+    static Id getOpenWithEditorId(const QString &fileName);//, bool *isExternalEditor = 0);
 
     static IDocument *currentDocument();
     static IEditor *currentEditor();
@@ -169,7 +169,7 @@ public:
     static void hideEditorStatusBar(const QString &id);
 
     static EditorFactoryList editorFactories(const MimeType &mimeType, bool bestMatchOnly = true);
-    static ExternalEditorList externalEditors(const MimeType &mimeType, bool bestMatchOnly = true);
+    //static ExternalEditorList externalEditors(const MimeType &mimeType, bool bestMatchOnly = true);
 
     static void setReloadSetting(IDocument::ReloadSetting behavior);
     static IDocument::ReloadSetting reloadSetting();
@@ -233,7 +233,7 @@ private slots:
     static void closeOtherEditorsFromContextMenu();
 
     static void showInGraphicalShell();
-    static void openTerminal();
+    //static void openTerminal();
     static void findInDirectory();
 
     static void rootDestroyed(QObject *root);

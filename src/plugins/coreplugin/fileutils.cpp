@@ -119,7 +119,7 @@ void FileUtils::showInGraphicalShell(QWidget *parent, const QString &pathIn)
     }
 }
 
-void FileUtils::openTerminal(const QString &path)
+/*void FileUtils::openTerminal(const QString &path)
 {
     // Get terminal application
     QString terminalEmulator;
@@ -142,7 +142,7 @@ void FileUtils::openTerminal(const QString &path)
                                                  fileInfo.absoluteFilePath() :
                                                  fileInfo.absolutePath());
     QProcess::startDetached(terminalEmulator, args, pwd);
-}
+}*/
 
 QString FileUtils::msgFindInDirectory()
 {
@@ -158,12 +158,12 @@ QString FileUtils::msgGraphicalShellAction()
     return QApplication::translate("Core::Internal", "Show Containing Folder");
 }
 
-QString FileUtils::msgTerminalAction()
+/*QString FileUtils::msgTerminalAction()
 {
     if (HostOsInfo::isWindowsHost())
         return QApplication::translate("Core::Internal", "Open Command Prompt Here");
     return QApplication::translate("Core::Internal", "Open Terminal Here");
-}
+}*/
 
 void FileUtils::removeFile(const QString &filePath, bool deleteFromFS)
 {

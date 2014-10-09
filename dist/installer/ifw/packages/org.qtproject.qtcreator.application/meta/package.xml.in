@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>QForex Application</DisplayName>
+    <Description>The Forex Client.</Description>
+    <Version>{version}</Version>
+    <ReleaseDate>{date}</ReleaseDate>
+    <Name>org.qtproject.qtcreator.application</Name>
+    <Script>installscript.qs</Script>
+    <Licenses>
+        <License name="QForex License" file="license.txt" />
+    </Licenses>
+    <ForcedInstallation>true</ForcedInstallation>
+    <Default>true</Default>
+    <AutoDependOn>org.qtproject.qtcreator</AutoDependOn>
+    <UserInterfaces>
+        <UserInterface>associatecommonfiletypesform.ui</UserInterface>
+        <UserInterface>launchqtcreatorcheckboxform.ui</UserInterface>
+    </UserInterfaces>
+</Package>

@@ -50,7 +50,6 @@ namespace Core {
 class ActionManager;
 class StatusBarWidget;
 class EditorManager;
-class ExternalToolManager;
 class DocumentManager;
 class HelpManager;
 class IDocument;
@@ -72,7 +71,6 @@ class FancyTabWidget;
 class GeneralSettings;
 class ProgressManagerPrivate;
 class ShortcutSettings;
-class ToolSettings;
 class MimeTypeSettings;
 class StatusBarManager;
 class VersionDialog;
@@ -142,7 +140,7 @@ private slots:
     void openRecentFile();
     void setFocusToEditor();
     void saveAll();
-    void aboutQtCreator();
+    void aboutApplication();
     void aboutPlugins();
     void updateFocusWidget(QWidget *old, QWidget *now);
     void setSidebarVisible(bool visible);
@@ -168,7 +166,6 @@ private:
     WindowSupport *m_windowSupport;
     ActionManager *m_actionManager;
     EditorManager *m_editorManager;
-    ExternalToolManager *m_externalToolManager;
     MessageManager *m_messageManager;
     ProgressManagerPrivate *m_progressManager;
     VariableManager *m_variableManager;
@@ -190,9 +187,7 @@ private:
 
     GeneralSettings *m_generalSettings;
     ShortcutSettings *m_shortcutSettings;
-    ToolSettings *m_toolSettings;
     MimeTypeSettings *m_mimeTypeSettings;
-    SystemEditor *m_systemEditor;
 
     // actions
     QAction *m_focusToEditor;

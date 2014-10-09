@@ -28,7 +28,7 @@ set(LIB_SOURCES
     editormanager/openeditorsview.cpp
     editormanager/openeditorswindow.cpp
     editormanager/ieditorfactory.cpp
-    editormanager/iexternaleditor.cpp
+    #editormanager/iexternaleditor.cpp
     actionmanager/actionmanager.cpp
     actionmanager/command.cpp
     actionmanager/commandbutton.cpp
@@ -69,16 +69,16 @@ set(LIB_SOURCES
     dialogs/ioptionspage.cpp
     settingsdatabase.cpp
     imode.cpp
-    editormanager/systemeditor.cpp
+#    editormanager/systemeditor.cpp
     designmode.cpp
     editortoolbar.cpp
     helpmanager.cpp
     outputpanemanager.cpp
     navigationsubwidget.cpp
     sidebarwidget.cpp
-    externaltool.cpp
-    dialogs/externaltoolconfig.cpp
-    toolsettings.cpp
+    #externaltool.cpp
+    #dialogs/externaltoolconfig.cpp
+    #toolsettings.cpp
     variablechooser.cpp
     mimetypemagicdialog.cpp
     mimetypesettings.cpp
@@ -145,7 +145,7 @@ set(LIB_HEADERS
     editormanager/openeditorsview.h
     editormanager/openeditorswindow.h
     editormanager/ieditor.h
-    editormanager/iexternaleditor.h
+    #editormanager/iexternaleditor.h
     editormanager/ieditorfactory.h
     actionmanager/actioncontainer.h
     actionmanager/actionmanager.h
@@ -198,22 +198,22 @@ set(LIB_HEADERS
     fileiconprovider.h
     mimedatabase.h
     settingsdatabase.h
-    editormanager/systemeditor.h
+#    editormanager/systemeditor.h
     designmode.h
     editortoolbar.h
     helpmanager.h
     outputpanemanager.h
     navigationsubwidget.h
     sidebarwidget.h
-    externaltool.h
-    dialogs/externaltoolconfig.h
-    toolsettings.h
+    #externaltool.h
+    #dialogs/externaltoolconfig.h
+    #toolsettings.h
     variablechooser.h
     mimetypemagicdialog.h
     mimetypesettings.h
     dialogs/promptoverwritedialog.h
     fileutils.h
-    externaltoolmanager.h
+    #externaltoolmanager.h
     generatedfile.h
     featureprovider.h
     idocument.h
@@ -262,7 +262,7 @@ set(LIB_FORMS
     dialogs/readonlyfilesdialog.ui
     dialogs/openwithdialog.ui
     generalsettings.ui
-    dialogs/externaltoolconfig.ui
+    #dialogs/externaltoolconfig.ui
     mimetypesettingspage.ui
     mimetypemagicdialog.ui
     removefiledialog.ui

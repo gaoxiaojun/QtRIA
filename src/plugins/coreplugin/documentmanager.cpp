@@ -40,7 +40,6 @@
 #include <coreplugin/editormanager/editorview.h>
 #include <coreplugin/editormanager/ieditor.h>
 #include <coreplugin/editormanager/ieditorfactory.h>
-#include <coreplugin/editormanager/iexternaleditor.h>
 
 #include <utils/hostosinfo.h>
 #include <utils/qtcassert.h>
@@ -115,9 +114,9 @@ namespace Internal {
 
 struct OpenWithEntry
 {
-    OpenWithEntry() : editorFactory(0), externalEditor(0) {}
+    OpenWithEntry() : editorFactory(0)/*, externalEditor(0) */{}
     IEditorFactory *editorFactory;
-    IExternalEditor *externalEditor;
+    //IExternalEditor *externalEditor;
     QString fileName;
 };
 
@@ -1375,7 +1374,7 @@ void DocumentManager::notifyFilesChangedInternally(const QStringList &files)
 void DocumentManager::populateOpenWithMenu(QMenu *menu, const QString &fileName)
 {
     typedef QList<IEditorFactory*> EditorFactoryList;
-    typedef QList<IExternalEditor*> ExternalEditorList;
+    //typedef QList<IExternalEditor*> ExternalEditorList;
 
     menu->clear();
 
@@ -1383,8 +1382,8 @@ void DocumentManager::populateOpenWithMenu(QMenu *menu, const QString &fileName)
 
     if (const MimeType mt = MimeDatabase::findByFile(QFileInfo(fileName))) {
         const EditorFactoryList factories = EditorManager::editorFactories(mt, false);
-        const ExternalEditorList externalEditors = EditorManager::externalEditors(mt, false);
-        anyMatches = !factories.empty() || !externalEditors.empty();
+        //const ExternalEditorList externalEditors = EditorManager::externalEditors(mt, false);
+        anyMatches = !factories.empty();//|| !externalEditors.empty();
         if (anyMatches) {
             // Add all suitable editors
             foreach (IEditorFactory *editorFactory, factories) {
@@ -1397,13 +1396,13 @@ void DocumentManager::populateOpenWithMenu(QMenu *menu, const QString &fileName)
                 action->setData(qVariantFromValue(entry));
             }
             // Add all suitable external editors
-            foreach (IExternalEditor *externalEditor, externalEditors) {
+            /*foreach (IExternalEditor *externalEditor, externalEditors) {
                 QAction * const action = menu->addAction(externalEditor->displayName());
                 OpenWithEntry entry;
                 entry.externalEditor = externalEditor;
                 entry.fileName = fileName;
                 action->setData(qVariantFromValue(entry));
-            }
+            }*/
         }
     }
     menu->setEnabled(anyMatches);
@@ -1453,8 +1452,8 @@ void DocumentManager::executeOpenWithMenuAction(QAction *action)
         }
         return;
     }
-    if (entry.externalEditor)
-        EditorManager::openExternalEditor(entry.fileName, entry.externalEditor->id());
+    //if (entry.externalEditor)
+   //     EditorManager::openExternalEditor(entry.fileName, entry.externalEditor->id());
 }
 
 bool DocumentManager::eventFilter(QObject *obj, QEvent *e)

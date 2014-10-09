@@ -46,7 +46,6 @@
 #include <coreplugin/icore.h>
 #include <coreplugin/variablemanager.h>
 #include <coreplugin/actionmanager/actionmanager.h>
-#include <coreplugin/externaltoolmanager.h>
 #include <extensionsystem/pluginmanager.h>
 #include <texteditor/texteditoractionhandler.h>
 #include <utils/qtcassert.h>
@@ -255,10 +254,6 @@ void TextEditorPlugin::extensionsInitialized()
             ITextEditor *editor = ITextEditor::currentTextEditor();
             return editor ? editor->widget()->font().pointSize() : 0;
         });
-
-
-    connect(Core::ExternalToolManager::instance(), SIGNAL(replaceSelectionRequested(QString)),
-            this, SLOT(updateCurrentSelection(QString)));
 }
 
 PlainTextEditorFactory *TextEditorPlugin::editorFactory()

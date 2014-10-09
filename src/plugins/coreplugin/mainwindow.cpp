@@ -30,7 +30,6 @@
 #include "mainwindow.h"
 #include "icore.h"
 #include "coreconstants.h"
-#include "toolsettings.h"
 #include "mimetypesettings.h"
 #include "fancytabwidget.h"
 #include "documentmanager.h"
@@ -52,8 +51,6 @@
 #include "rightpane.h"
 #include "editormanager/ieditorfactory.h"
 #include "statusbarwidget.h"
-#include "externaltoolmanager.h"
-#include "editormanager/systemeditor.h"
 #include "windowsupport.h"
 
 #include <app/app_version.h>
@@ -115,7 +112,6 @@ MainWindow::MainWindow() :
     m_windowSupport(0),
     m_actionManager(new ActionManager(this)),
     m_editorManager(0),
-    m_externalToolManager(0),
     m_progressManager(new ProgressManagerPrivate),
     m_variableManager(new VariableManager),
     m_vcsManager(new VcsManager),
@@ -129,9 +125,7 @@ MainWindow::MainWindow() :
     m_versionDialog(0),
     m_generalSettings(new GeneralSettings),
     m_shortcutSettings(new ShortcutSettings),
-    m_toolSettings(new ToolSettings),
     m_mimeTypeSettings(new MimeTypeSettings),
-    m_systemEditor(new SystemEditor),
     m_focusToEditor(0),
     m_newAction(0),
     m_openAction(0),
@@ -190,7 +184,6 @@ MainWindow::MainWindow() :
     m_messageManager = new MessageManager;
     m_editorManager = new EditorManager(this);
     m_editorManager->hide();
-    m_externalToolManager = new ExternalToolManager();
     setCentralWidget(m_modeStack);
 
     m_progressManager->progressView()->setParent(this);
@@ -200,10 +193,6 @@ MainWindow::MainWindow() :
             this, SLOT(updateFocusWidget(QWidget*,QWidget*)));
     // Add a small Toolbutton for toggling the navigation widget
     statusBar()->insertPermanentWidget(0, m_toggleSideBarButton);
-
-//    setUnifiedTitleAndToolBarOnMac(true);
-    //if (Utils::HostOsInfo::isAnyUnixHost())
-        //signal(SIGINT, handleSigInt);
 
     statusBar()->setProperty("p_styled", true);
 
@@ -249,23 +238,15 @@ MainWindow::~MainWindow()
 
     ExtensionSystem::PluginManager::removeObject(m_shortcutSettings);
     ExtensionSystem::PluginManager::removeObject(m_generalSettings);
-    ExtensionSystem::PluginManager::removeObject(m_toolSettings);
     ExtensionSystem::PluginManager::removeObject(m_mimeTypeSettings);
-    ExtensionSystem::PluginManager::removeObject(m_systemEditor);
-    delete m_externalToolManager;
-    m_externalToolManager = 0;
     delete m_messageManager;
     m_messageManager = 0;
     delete m_shortcutSettings;
     m_shortcutSettings = 0;
     delete m_generalSettings;
     m_generalSettings = 0;
-    delete m_toolSettings;
-    m_toolSettings = 0;
     delete m_mimeTypeSettings;
     m_mimeTypeSettings = 0;
-    delete m_systemEditor;
-    m_systemEditor = 0;
     delete m_printer;
     m_printer = 0;
     delete m_vcsManager;
@@ -318,9 +299,7 @@ bool MainWindow::init(QString *errorMessage)
 
     ExtensionSystem::PluginManager::addObject(m_generalSettings);
     ExtensionSystem::PluginManager::addObject(m_shortcutSettings);
-    ExtensionSystem::PluginManager::addObject(m_toolSettings);
     ExtensionSystem::PluginManager::addObject(m_mimeTypeSettings);
-    ExtensionSystem::PluginManager::addObject(m_systemEditor);
 
     // Add widget to the bottom, we create the view here instead of inside the
     // OutputPaneManager, since the StatusBarManager needs to be initialized before
@@ -697,7 +676,7 @@ void MainWindow::registerDefaultActions()
     if (!Utils::HostOsInfo::isMacHost())
         mhelp->addSeparator(globalContext, Constants::G_HELP_ABOUT);
 
-    // About IDE Action
+    // About Application Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
     if (Utils::HostOsInfo::isMacHost())
         tmpaction = new QAction(icon, tr("About &Qt Creator"), this); // it's convention not to add dots to the about menu
@@ -708,7 +687,7 @@ void MainWindow::registerDefaultActions()
         cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
     tmpaction->setEnabled(true);
-    connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutQtCreator()));
+    connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutApplication()));
 
     //About Plugins Action
     tmpaction = new QAction(tr("About &Plugins..."), this);
@@ -718,12 +697,7 @@ void MainWindow::registerDefaultActions()
     mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
     tmpaction->setEnabled(true);
     connect(tmpaction, SIGNAL(triggered()), this,  SLOT(aboutPlugins()));
-    // About Qt Action
-//    tmpaction = new QAction(tr("About &Qt..."), this);
-//    cmd = ActionManager::registerAction(tmpaction, Constants:: ABOUT_QT, globalContext);
-//    mhelp->addAction(cmd, Constants::G_HELP_ABOUT);
-//    tmpaction->setEnabled(true);
-//    connect(tmpaction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
     // About sep
     if (!Utils::HostOsInfo::isMacHost()) { // doesn't have the "About" actions in the Help menu
         tmpaction = new QAction(this);
@@ -856,14 +830,11 @@ void MainWindow::exit()
 void MainWindow::openFileWith()
 {
     foreach (const QString &fileName, EditorManager::getOpenFileNames()) {
-        bool isExternal;
-        const Id editorId = EditorManager::getOpenWithEditorId(fileName, &isExternal);
+
+        const Id editorId = EditorManager::getOpenWithEditorId(fileName);
         if (!editorId.isValid())
             continue;
-        if (isExternal)
-            EditorManager::openExternalEditor(fileName, editorId);
-        else
-            EditorManager::openEditor(fileName, editorId);
+        EditorManager::openEditor(fileName, editorId);
     }
 }
 
@@ -1081,7 +1052,7 @@ void MainWindow::openRecentFile()
     }
 }
 
-void MainWindow::aboutQtCreator()
+void MainWindow::aboutApplication()
 {
     if (!m_versionDialog) {
         m_versionDialog = new VersionDialog(this);

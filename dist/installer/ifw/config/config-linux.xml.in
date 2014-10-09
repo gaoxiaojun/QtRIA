@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Installer>
+    <Name>QForex</Name>
+    <Version>{version}</Version>
+    <Title>QForex {version}</Title>
+    <Publisher>QForex Project</Publisher>
+    <ProductUrl>http://www.dailypips.org</ProductUrl>
+
+    <InstallerWindowIcon>logo.png</InstallerWindowIcon>
+    <Watermark>watermark.png</Watermark>
+    <UninstallerName>QForexUninstaller</UninstallerName>
+    <!-- @homeDir@ and @rootDir@ are some of the supported vars -->
+    <TargetDir>@homeDir@/qforex-{version}</TargetDir>
+    <AdminTargetDir>/opt/qforex-{version}</AdminTargetDir>
+</Installer>

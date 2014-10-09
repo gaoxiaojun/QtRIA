@@ -35,7 +35,6 @@
 #include "ui_mimetypesettingspage.h"
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/editormanager/ieditorfactory.h>
-#include <coreplugin/editormanager/iexternaleditor.h>
 #include <utils/algorithm.h>
 #include <utils/headerviewstretcher.h>
 
@@ -130,11 +129,11 @@ void MimeTypeSettingsModel::load()
         if (!factories.isEmpty()) {
             value = factories.front()->displayName();
         } else {
-            const QList<IExternalEditor *> externalEditors =
+            /*const QList<IExternalEditor *> externalEditors =
                 EditorManager::externalEditors(mimeType);
             if (!externalEditors.isEmpty())
                 value = externalEditors.front()->displayName();
-            else
+            else*/
                 value = tr("Undefined");
         }
         m_handlersByMimeType.insert(mimeType.type(), value);

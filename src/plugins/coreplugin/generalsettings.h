@@ -59,7 +59,7 @@ private slots:
     void resetLanguage();
     void showHelpForFileBrowser();
     void resetFileBrowser();
-    void resetTerminal();
+    //void resetTerminal();
     void updatePath();
 
 private:
