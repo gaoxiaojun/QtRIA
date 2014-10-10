@@ -33,7 +33,7 @@
 #include <QByteArray>
 #include <QString>
 
-const char APPLICATION_NAME[] = "Qt Creator Crash Handler";
+const char APPLICATION_NAME[] = "QtRCP Crash Handler";
 const char URL_BUGTRACKER[] = "https://bugreports.qt-project.org/";
 
 QByteArray fileContents(const QString &filePath);
