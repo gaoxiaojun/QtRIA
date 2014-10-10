@@ -5,6 +5,7 @@ project(${APPLICATION_NAME})
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(APPLICATION_ICON qrcp.icns)
 configure_file(app_version.h.in app_version.h)
 
 set(APP_SOURCES
@@ -82,7 +83,7 @@ if(APPLE)
     add_custom_command(OUTPUT ${APPLICATION_BUNDLE_DIR}/Info.plist
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/Info.plist ${APPLICATION_BUNDLE_DIR}/Info.plist
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/app.icns ${APPLICATION_DATA_DIR}/${APPLICATION_NAME}.icns
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/app.icns ${APPLICATION_DATA_DIR}/${APPLICATION_ICON}
         COMMENT "Copy Application Info.plist"
     )
     add_custom_target(${PROJECT_NAME}_copy_info_plist ALL DEPENDS ${APPLICATION_BUNDLE_DIR}/Info.plist)

@@ -41,7 +41,7 @@
         <key>NSHumanReadableCopyright</key>
         <string>${APPLICATION_AUTHOR}</string>
 	<key>CFBundleIconFile</key>
-        <string>${ICON}</string>
+        <string>${APPLICATION_ICON}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
