@@ -1,18 +1,18 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-project(HelloWorld)
+project(Chart)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(LIB_SOURCES
-	helloworldplugin.cpp
-        helloworldwindow.cpp
+	chartplugin.cpp
+        chartwindow.cpp
 )
 
 set(LIB_HEADERS
-	helloworldplugin.h
-	helloworldwindow.h
+	chartplugin.h
+	chartwindow.h
 )
 set(LIB_FORMS
 )
@@ -40,7 +40,6 @@ set(TARGET_LIBRARIES
     ${EXTRA_LIBRARY}
     Qt5::Widgets
     Qt5::Core
-    Qt5::Quick
 )
 
 

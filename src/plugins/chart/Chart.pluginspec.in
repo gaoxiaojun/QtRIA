@@ -1,4 +1,4 @@
-<plugin name="HelloWorld" version="${APPLICATION_VERSION}" compatVersion="${APPLICATION_COMPAT_VERSION}">
+<plugin name="Chart" version="${APPLICATION_VERSION}" compatVersion="${APPLICATION_COMPAT_VERSION}">
     <vendor>Digia Plc</vendor>
     <copyright>(C) 2014 Digia Plc</copyright>
     <license>
