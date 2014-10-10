@@ -13,6 +13,7 @@ if(APPLE)
     set(APPLICATION_PLUGINS_DIR ${APPLICATION_BUNDLE_DIR}/PlugIns)
     set(APPLICATION_DATA_DIR ${APPLICATION_BUNDLE_DIR}/Resources)
 else()
+    set(APPLICATION_BIN_DIR ${CMAKE_BINARY_DIR}/bin)
     set(APPLICATION_PLUGINS_DIR ${CMAKE_BINARY_DIR}/plugins)
 endif()
 
@@ -106,7 +107,7 @@ if(APPLE)
 endif()
 if (Qt5_POSITION_INDEPENDENT_CODE)
   set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-  message(STAUTS "Enable Position Independent Code")
+  message(STATUS "Enable Position Independent Code")
 endif()
 ########################################  Setup Common Settings  #######################################################
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -114,4 +115,4 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ########################################################################################################################
 add_subdirectory(src)
-add_subdirectory(res)
+#add_subdirectory(res)

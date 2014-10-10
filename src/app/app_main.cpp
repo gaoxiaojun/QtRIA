@@ -198,7 +198,7 @@ static inline QStringList getPluginPaths()
     // 1) "plugins" (Win/Linux)
     QString pluginPath = rootDirPath;
     pluginPath += QLatin1Char('/');
-    pluginPath += QLatin1String(APP_LIBRARY_BASENAME);
+    //pluginPath += QLatin1String(APP_LIBRARY_BASENAME);
     pluginPath += QLatin1String("/plugins");
     rc.push_back(pluginPath);
 #else
@@ -303,7 +303,7 @@ int main(int argc, char **argv)
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     // QML is unusable with the xlib backend
-    QApplication::setGraphicsSystem(QLatin1String("raster"));
+    //QApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 
     SharedTools::QtSingleApplication app(appName, argc, argv);

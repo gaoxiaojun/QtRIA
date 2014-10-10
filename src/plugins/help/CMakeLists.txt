@@ -105,9 +105,13 @@ set(TARGET_LIBRARIES
     Qt5::Core
     Qt5::WebKit
     Qt5::WebKitWidgets
-    Qt5::MacExtras
 )
 
+if(APPLE)
+  list(APPEND TARGET_LIBRARIES
+       Qt5::MacExtras
+  )
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${LIB_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${TARGET_LIBRARIES})

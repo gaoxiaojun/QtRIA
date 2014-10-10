@@ -66,7 +66,7 @@ const char * const APP_SETTINGSVARIANT_STR      = STRINGIFY(APP_NAME);
 
 const char * const APP_COPY_SETTINGS_FROM_VARIANT_STR = STRINGIFY(APP_NAME);
 
-
+const char * const APP_LIBRARY_BASENAME = "lib";
 #undef APP_VERSION
 #undef APP_VERSION_STR
 #undef STRINGIFY
