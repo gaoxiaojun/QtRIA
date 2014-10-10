@@ -8,16 +8,25 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(LIB_SOURCES
 	chartplugin.cpp
         chartwindow.cpp
+        chartmode.cpp
+        barchart.cpp
+	generalsettingspage.cpp
 )
 
 set(LIB_HEADERS
+	chartconstants.h
 	chartplugin.h
 	chartwindow.h
+        chartmode.h
+        barchart.h
+	generalsettingspage.h
 )
 set(LIB_FORMS
+	generalsettingspage.ui
 )
 
 set(LIB_RESOURCES
+    chart.qrc
 )
 
 qt5_wrap_ui(LIB_FORMS_HEADERS ${LIB_FORMS})
@@ -30,13 +39,14 @@ list(APPEND LIB_SOURCES
 )
 
 get_filename_component(PARENT_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
-include_directories(${PARENT_DIR} ${${APPLICATION_NAME}_INCLUDE_DIRS} ${extensionsystem_INCLUDE_DIRS} ${utils_INCLUDE_DIRS} ${Core_INCLUDE_DIRS})
+include_directories(${PARENT_DIR} ${${APPLICATION_NAME}_INCLUDE_DIRS} ${extensionsystem_INCLUDE_DIRS} ${utils_INCLUDE_DIRS} ${qwt_INCLUDE_DIRS} ${Core_INCLUDE_DIRS})
 
 
 set(TARGET_LIBRARIES
     ${Core_LIBRARIES}
     ${extensionsystem_LIBRARIES}
     ${utils_LIBRARIES}
+    ${qwt_LIBRARIES}
     ${EXTRA_LIBRARY}
     Qt5::Widgets
     Qt5::Core

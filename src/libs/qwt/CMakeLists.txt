@@ -6,7 +6,7 @@ project(qwt)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(LIB_BASE_SOURCES
+set(QWT_BASE_SOURCES
     qwt_abstract_scale_draw.cpp
     qwt_clipper.cpp
     qwt_color_map.cpp
@@ -45,7 +45,7 @@ set(LIB_BASE_SOURCES
     qwt_widget_overlay.cpp
 )
 
-set(GLOB LIB_BASE_HEADERS
+set(GLOB QWT_BASE_HEADERS
     qwt.h
     qwt_abstract_scale_draw.h
     qwt_clipper.h
@@ -133,7 +133,7 @@ set(QWT_PLOT_HEADERS
         qwt_point_data.h
         qwt_scale_widget.h
 )
-set(QWT_SOURCES
+set(QWT_PLOT_SOURCES
         qwt_curve_fitter.cpp
         qwt_abstract_legend.cpp
         qwt_legend.cpp
@@ -181,10 +181,10 @@ set(QWT_SOURCES
 )
 
 set(LIB_SOURCES
-    ${LIB_BASE_SOURCES}
-    ${LIB_BASE_HEADERS}
-    ${LIB_PLOT_SOURCES}
-    ${LIB_PLOT_HEADERS}
+    ${QWT_BASE_SOURCES}
+    ${QWT_BASE_HEADERS}
+    ${QWT_PLOT_SOURCES}
+    ${QWT_PLOT_HEADERS}
 )
 
 #file(GLOB LIB_FORMS *.ui)
@@ -204,8 +204,7 @@ set(TARGET_LIBRARIES
 add_library(${PROJECT_NAME} SHARED ${LIB_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${TARGET_LIBRARIES})
 
-get_filename_component(PARENT_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
-set(${PROJECT_NAME}_INCLUDE_DIRS ${PARENT_DIR} CACHE INTERNAL "${PROJECT_NAME}_include" FORCE)
+set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR} CACHE INTERNAL "${PROJECT_NAME}_include" FORCE)
 set(${PROJECT_NAME}_LIBRARIES ${PROJECT_NAME} CACHE INTERNAL "${PROJECT_NAME}_library" FORCE)
 
 install(TARGETS ${PROJECT_NAME}

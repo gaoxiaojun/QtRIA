@@ -4,7 +4,8 @@
 
 TEMPLATE = app
 TARGET = QtRCP
-INCLUDEPATH += . \
+QT += widgets
+INCLUDEPATH += . src src/plugins src/libs \
                src/app \
                src/libs/aggregation \
                src/libs/extensionsystem \
@@ -29,10 +30,6 @@ INCLUDEPATH += . \
                src/plugins/coreplugin/locator \
                src/plugins/coreplugin/progressmanager \
                res/templates/wizards/bb-cascades-app/src \
-               src/libs/aggregation/examples/text \
-               src/libs/extensionsystem/test/manual/pluginview/plugins/plugin1 \
-               src/libs/extensionsystem/test/manual/pluginview/plugins/plugin2 \
-               src/libs/extensionsystem/test/manual/pluginview/plugins/plugin3
 
 # Input
 HEADERS += src/app/backtracecollector.h \
@@ -561,12 +558,12 @@ HEADERS += src/app/backtracecollector.h \
            src/plugins/texteditor/snippets/snippetssettings.h \
            src/plugins/texteditor/snippets/snippetssettingspage.h \
            res/templates/wizards/bb-cascades-app/src/applicationui.h \
-           src/libs/aggregation/examples/text/main.h \
-           src/libs/aggregation/examples/text/myinterfaces.h \
-           src/libs/extensionsystem/test/manual/pluginview/plugindialog.h \
-           src/libs/extensionsystem/test/manual/pluginview/plugins/plugin1/plugin1.h \
-           src/libs/extensionsystem/test/manual/pluginview/plugins/plugin2/plugin2.h \
-           src/libs/extensionsystem/test/manual/pluginview/plugins/plugin3/plugin3.h
+    src/plugins/chart/chartconstants.h \
+    src/plugins/chart/chartmode.h \
+    src/plugins/chart/chartwindow.h \
+    src/plugins/chart/barchart.h \
+    src/plugins/chart/generalsettingspage.h
+
 FORMS += src/app/crashhandlerdialog.ui \
          src/libs/extensionsystem/plugindetailsview.ui \
          src/libs/extensionsystem/pluginerroroverview.ui \
@@ -611,9 +608,9 @@ FORMS += src/app/crashhandlerdialog.ui \
          src/plugins/texteditor/generichighlighter/highlightersettingspage.ui \
          src/plugins/texteditor/generichighlighter/managedefinitionsdialog.ui \
          src/plugins/texteditor/snippets/snippetssettingspage.ui \
-         src/libs/aggregation/examples/text/main.ui \
          dist/installer/ifw/packages/org.qtproject.qtcreator.application/meta/associatecommonfiletypesform.ui \
-         dist/installer/ifw/packages/org.qtproject.qtcreator.application/meta/launchqtcreatorcheckboxform.ui
+         dist/installer/ifw/packages/org.qtproject.qtcreator.application/meta/launchqtcreatorcheckboxform.ui \
+    src/plugins/chart/generalsettingspage.ui
 SOURCES += src/app/app_main.cpp \
            src/app/backtracecollector.cpp \
            src/app/crash_main.cpp \
@@ -1104,11 +1101,11 @@ SOURCES += src/app/app_main.cpp \
            res/templates/wizards/bb-cascades-app/src/main.cpp \
            res/templates/wizards/plaincapp/common/main.c \
            res/templates/wizards/plaincppapp/common/main.cpp \
-           src/libs/aggregation/examples/text/main.cpp \
-           src/libs/extensionsystem/test/manual/pluginview/plugindialog.cpp \
-           src/libs/extensionsystem/test/manual/pluginview/plugins/plugin1/plugin1.cpp \
-           src/libs/extensionsystem/test/manual/pluginview/plugins/plugin2/plugin2.cpp \
-           src/libs/extensionsystem/test/manual/pluginview/plugins/plugin3/plugin3.cpp
+    src/plugins/chart/chartmode.cpp \
+    src/plugins/chart/chartwindow.cpp \
+    src/plugins/chart/barchart.cpp \
+    src/plugins/chart/generalsettingspage.cpp
+
 RESOURCES += src/libs/extensionsystem/pluginview.qrc \
              src/libs/utils/utils.qrc \
              src/plugins/chart/chart.qrc \
@@ -1117,5 +1114,12 @@ RESOURCES += src/libs/extensionsystem/pluginview.qrc \
              src/plugins/help/help.qrc \
              src/plugins/texteditor/texteditor.qrc \
              src/plugins/coreplugin/find/find.qrc \
-             src/plugins/coreplugin/locator/locator.qrc
+             src/plugins/coreplugin/locator/locator.qrc \
+    src/plugins/chart/chart.qrc
+
 TRANSLATIONS += i18n/qforex_zh_CN.ts
+
+OTHER_FILES += \
+    src/plugins/chart/Chart.pluginspec.in \
+    src/plugins/chart/CMakeLists.txt \
+    src/libs/qwt/CMakeLists.txt

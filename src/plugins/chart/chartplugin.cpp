@@ -1,4 +1,6 @@
 #include "chartplugin.h"
+#include "chartmode.h"
+#include "generalsettingspage.h"
 
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
@@ -17,23 +19,6 @@
 
 namespace Chart {
 namespace Internal {
-
-/*!  A mode with a push button based on BaseMode.  */
-
-class ChartMode : public Core::IMode
-{
-public:
-    ChartMode()
-    {
-        setWidget(new QPushButton(tr("Chart World PushButton!")));
-        setContext(Core::Context("Chart.MainView"));
-        setDisplayName(tr("Chart world!"));
-        setIcon(QIcon());
-        setPriority(0);
-        setId("Chart.ChartMode");
-        setContextHelpId(QString());
-    }
-};
 
 
 /*! Constructs the Chart World plugin. Normally plugins don't do anything in
@@ -91,10 +76,11 @@ bool ChartPlugin::initialize(const QStringList &arguments, QString *errorMessage
             Core::ActionManager::actionContainer(Core::Constants::M_TOOLS);
     toolsMenu->addMenu(chartMenu);
 
-    // Add a mode with a push button based on BaseMode. Like the BaseView,
-    // it will unregister itself from the plugin manager when it is deleted.
-    Core::IMode *chartMode = new ChartMode;
-    addAutoReleasedObject(chartMode);
+
+    addAutoReleasedObject(m_generalSettingsPage = new GeneralSettingsPage());
+
+    m_mode = new ChartMode;
+    addAutoReleasedObject(m_mode);
 
     return true;
 }
@@ -112,6 +98,8 @@ bool ChartPlugin::initialize(const QStringList &arguments, QString *errorMessage
 */
 void ChartPlugin::extensionsInitialized()
 {
+    Core::ModeManager::activateMode(m_mode->id());
+
 }
 
 void ChartPlugin::sayChart()

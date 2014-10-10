@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/chart" >
+        <file>images/category_chart.png</file>
+        <file>images/mode_chart.png</file>
+        <file>images/mode_chart@2x.png</file>
+    </qresource>
+</RCC>
