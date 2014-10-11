@@ -1,5 +1,6 @@
 #include "chartplugin.h"
 #include "chartmode.h"
+#include "chartconstants.h"
 #include "generalsettingspage.h"
 
 #include <coreplugin/actionmanager/actionmanager.h>
@@ -14,6 +15,7 @@
 #include <QtPlugin>
 #include <QAction>
 #include <QMenu>
+#include <QMenuBar>
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -48,15 +50,8 @@ bool ChartPlugin::initialize(const QStringList &arguments, QString *errorMessage
     Q_UNUSED(arguments)
     Q_UNUSED(errorMessage)
 
-    // Create a unique context for our own view, that will be used for the
-    // menu entry later.
-    Core::Context context("Chart.MainView");
 
-    // Create an action to be triggered by a menu entry
-    QAction *chartAction = new QAction(tr("Say \"&Chart World!\""), this);
-    connect(chartAction, SIGNAL(triggered()), SLOT(sayChart()));
-
-    // Register the action with the action manager
+    /*// Register the action with the action manager
     Core::Command *command =
             Core::ActionManager::registerAction(
                     chartAction, "Chart.ChartAction", context);
@@ -74,8 +69,9 @@ bool ChartPlugin::initialize(const QStringList &arguments, QString *errorMessage
     // Request the Tools menu and add the Chart World menu to it
     Core::ActionContainer *toolsMenu =
             Core::ActionManager::actionContainer(Core::Constants::M_TOOLS);
-    toolsMenu->addMenu(chartMenu);
+    toolsMenu->addMenu(chartMenu);*/
 
+    setupChartMenu();
 
     addAutoReleasedObject(m_generalSettingsPage = new GeneralSettingsPage());
 
@@ -83,6 +79,51 @@ bool ChartPlugin::initialize(const QStringList &arguments, QString *errorMessage
     addAutoReleasedObject(m_mode);
 
     return true;
+}
+
+void ChartPlugin::setupChartMenu()
+{
+    Core::ActionContainer *menuBar = Core::ActionManager::actionContainer(Core::Constants::MENU_BAR);
+    Core::ActionContainer *medit = Core::ActionManager::actionContainer(Core::Constants::M_EDIT);
+    qDebug() << "MenuBar: " << menuBar << " id:" << menuBar->id().toString() << " bar:" << menuBar->menuBar();
+    Core::ActionContainer *chartBar = Core::ActionManager::createMenu(Constants::M_CHART);
+
+    chartBar->menu()->setTitle(tr("&Chart"));
+    chartBar->menu()->setEnabled(true);
+    //chartBar->menuBar()->setEnable(true);
+    chartBar->appendGroup(Constants::G_CHART_SIZE);
+    /*chartMenu->appendGroup(Constants::G_CHART_VIEWS);
+    chartMenu->appendGroup(Constants::G_CHART_PANES);
+    chartMenu->appendGroup(Constants::G_CHART_SPLIT);
+    chartMenu->appendGroup(Constants::G_CHART_NAVIGATE);
+    chartMenu->appendGroup(Constants::G_CHART_OTHER);
+*/
+    Core::Context globalcontext(Core::Constants::C_GLOBAL);
+    //Core::Context context("Chart.MainView");
+
+    // Create an action to be triggered by a menu entry
+    QAction *chartAction = new QAction(tr("Say \"&Chart World!\""), this);
+    connect(chartAction, SIGNAL(triggered()), SLOT(sayChart()));
+
+    // Register the action with the action manager
+    Core::Command *command =
+            Core::ActionManager::registerAction(
+                    chartAction, "Chart.ChartAction", globalcontext);
+
+    // Create our own menu to place in the Tools menu
+    /*Core::ActionContainer *chartMenu =
+            Core::ActionManager::createMenu("Chart.ChartMenu");
+    QMenu *menu = chartBar->menu();
+    menu->setTitle(tr("&Chart"));
+    menu->setEnabled(true);*/
+
+    // Add the Chart World action command to the menu
+    chartBar->addAction(command);
+
+    //menuBar->menuBar()->addMenu(chartBar->menu());
+    menuBar->addMenu(chartBar, Constants::G_CHART);
+
+
 }
 
 /*! Notification that all extensions that this plugin depends on have been

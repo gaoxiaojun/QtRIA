@@ -18,6 +18,18 @@ const char C_CHART_SIDEBAR[] = "Chart Sidebar";
 
 const char CONTEXT_CHART[] = "Chart.Context";
 
+const char M_CHART[]              = "QtCreator.Group.Edit.Chart";
+const char M_CHART_PANES[]        = "QRCP.Menu.Chart.Panes";
+const char M_CHART_VIEWS[]        = "QRCP.Menu.Chart.Views";
+
+const char G_CHART[]              = "QRCP.Group.Chart";
+const char G_CHART_SIZE[]         = "QRCP.Group.Chart.Size";
+const char G_CHART_PANES[]        = "QRCP.Group.Chart.Panes";
+const char G_CHART_VIEWS[]        = "QRCP.Group.Chart.Views";
+const char G_CHART_SPLIT[]        = "QRCP.Group.Chart.Split";
+const char G_CHART_NAVIGATE[]     = "QRCP.Group.Chart.Navigate";
+const char G_CHART_OTHER[]        = "QRCP.Group.Chart.Other";
+
 } // Constants
 } // Chart
 

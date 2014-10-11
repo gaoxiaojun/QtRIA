@@ -35,6 +35,7 @@ private slots:
     void sayChart();
 
 private:
+    void setupChartMenu();
     GeneralSettingsPage *m_generalSettingsPage;
     ChartMode *m_mode;
 };

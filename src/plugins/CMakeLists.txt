@@ -14,5 +14,5 @@ endmacro()
 
 add_plugin(coreplugin Core)
 add_plugin(texteditor TextEditor)
-#add_plugin(help Help)
+add_plugin(help Help)
 add_plugin(chart Chart)
