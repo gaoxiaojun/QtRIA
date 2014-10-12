@@ -21,10 +21,7 @@ list(APPEND LIB_SOURCES
         ${LIB_RESOURCES_HEADERS}
 )
 
-include_directories(${aggregation_INCLUDE_DIRS})
-
 set(TARGET_LIBRARIES
-    ${aggregation_LIBRARIES}
     Qt5::Widgets
     Qt5::Core
 )

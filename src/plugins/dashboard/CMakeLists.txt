@@ -5,20 +5,10 @@ project(DashBoard)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(LIB_SOURCES
-	dashboardplugin.cpp
-)
-
-set(LIB_HEADERS
-        dashboardconstants.h 
-	dashboardplugin.h
-)
-set(LIB_FORMS
-)
-
-set(LIB_RESOURCES
-	dashboard.qrc
-)
+file(GLOB LIB_SOURCES *.cpp)
+file(GLOB LIB_HEADERS *.h)
+file(GLOB LIB_FORMS *.ui)
+file(GLOB LIB_RESOURCES *.qrc)
 
 qt5_wrap_ui(LIB_FORMS_HEADERS ${LIB_FORMS})
 qt5_add_resources(LIB_RESOURCES_HEADERS ${LIB_RESOURCES})
@@ -29,8 +19,7 @@ list(APPEND LIB_SOURCES
         ${LIB_RESOURCES_HEADERS}
 )
 
-get_filename_component(PARENT_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
-include_directories(${PARENT_DIR} ${extensionsystem_INCLUDE_DIRS} ${utils_INCLUDE_DIRS} ${Core_INCLUDE_DIRS})
+include_directories(${extensionsystem_INCLUDE_DIRS} ${utils_INCLUDE_DIRS} ${Core_INCLUDE_DIRS})
 
 
 set(TARGET_LIBRARIES

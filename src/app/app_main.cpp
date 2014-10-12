@@ -303,8 +303,6 @@ int main(int argc, char **argv)
     if (!settingsPath.isEmpty())
         QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsPath);
 
-    qDebug() << "settingsPath: " << settingsPath;
-
     // Must be done before any QSettings class is created
     QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, getResourcePaths());
     QSettings::setDefaultFormat(QSettings::IniFormat);
@@ -333,7 +331,7 @@ int main(int argc, char **argv)
     if (!overrideLanguage.isEmpty())
         uiLanguages.prepend(overrideLanguage);
     const QString &appTrPath = getResourcePaths() + QLatin1String("/translations");
-    qDebug() << "TrPath:" << appTrPath;
+
     foreach (QString locale, uiLanguages) {
 
         locale = QLocale(locale).name();

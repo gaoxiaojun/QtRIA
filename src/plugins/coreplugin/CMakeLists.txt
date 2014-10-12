@@ -307,7 +307,7 @@ list(APPEND LIB_SOURCES
         ${LIB_RESOURCES_HEADERS}
 )
 
-get_filename_component(PARENT_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
+get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 include_directories(${PARENT_DIR} ${extensionsystem_INCLUDE_DIRS} ${utils_INCLUDE_DIRS})
 
 
