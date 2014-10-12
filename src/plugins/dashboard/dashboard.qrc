@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/dashboard" >
+        <file>images/category_dashboard.png</file>
+        <file>images/mode_dashboard.png</file>
+        <file>images/mode_dashboard_2x.png</file>
+        <file>images/mode_dashboard_4x.png</file>
+    </qresource>
+</RCC>

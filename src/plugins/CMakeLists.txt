@@ -1,6 +1,7 @@
-set(JSON_XSL ${CMAKE_CURRENT_SOURCE_DIR}/qtcreatorplugin2json.xsl CACHE INTERNAL "json_xsl" FORCE)
+set(JSON_XSL ${CMAKE_CURRENT_SOURCE_DIR}/plugin2json.xsl CACHE INTERNAL "json_xsl" FORCE)
 
 macro(add_plugin plugin_dir plugin_name)
+    set(PLUGIN_NAME ${plugin_name})
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${plugin_dir}/${plugin_name}.pluginspec.in ${CMAKE_CURRENT_BINARY_DIR}/${plugin_dir}/${plugin_name}.pluginspec)
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${plugin_dir}/${plugin_name}.json
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${plugin_dir}/${plugin_name}.pluginspec
@@ -16,3 +17,4 @@ add_plugin(coreplugin Core)
 add_plugin(texteditor TextEditor)
 add_plugin(help Help)
 add_plugin(chart Chart)
+add_plugin(dashboard DashBoard)

@@ -1,21 +1,23 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-project(Welcome)
+project(DashBoard)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(LIB_SOURCES
-	welcomeplugin.cpp
+	dashboardplugin.cpp
 )
 
 set(LIB_HEADERS
-	welcomeplugin.h
+        dashboardconstants.h 
+	dashboardplugin.h
 )
 set(LIB_FORMS
 )
 
 set(LIB_RESOURCES
+	dashboard.qrc
 )
 
 qt5_wrap_ui(LIB_FORMS_HEADERS ${LIB_FORMS})

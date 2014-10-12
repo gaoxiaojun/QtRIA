@@ -7,7 +7,7 @@
 namespace Chart {
 namespace Constants {
 
-const int  P_MODE_CHART    = 1000;
+const int  P_MODE_CHART    = 100;
 const char ID_MODE_CHART  [] = "Chart";
 const char CHART_CATEGORY[] = "C.Chart";
 const char CHART_CATEGORY_ICON[] = ":/chart/images/category_chart.png";

@@ -117,7 +117,7 @@ void ChartPlugin::setupChartMenu()
 */
 void ChartPlugin::extensionsInitialized()
 {
-    Core::ModeManager::activateMode(m_mode->id());
+    //Core::ModeManager::activateMode(m_mode->id());
 
 }
 

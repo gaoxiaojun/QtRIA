@@ -1,33 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of Qt Creator.
-**
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-****************************************************************************/
-
-#include "welcomeplugin.h"
+#include "dashboardplugin.h"
+#include "dashboardconstants.h"
 
 #include <extensionsystem/pluginmanager.h>
 
@@ -63,18 +35,18 @@ enum { debug = 0 };
 using namespace ExtensionSystem;
 using namespace Utils;
 
-static const char currentPageSettingsKeyC[] = "WelcomeTab";
+static const char currentPageSettingsKeyC[] = "DashBoardTab";
 
-namespace Welcome {
+namespace DashBoard {
 namespace Internal {
 
-class WelcomeMode : public Core::IMode
+class DashBoardMode : public Core::IMode
 {
     Q_OBJECT
     Q_PROPERTY(int activePlugin READ activePlugin WRITE setActivePlugin NOTIFY activePluginChanged)
 public:
-    WelcomeMode();
-    ~WelcomeMode();
+    DashBoardMode();
+    ~DashBoardMode();
 
     void activated();
     void initPlugins();
@@ -97,7 +69,7 @@ signals:
     void activePluginChanged(int pos);
 
 private slots:
-    void welcomePluginAdded(QObject*);
+    void dashboardPluginAdded(QObject*);
 #if QT_VERSION >= 0x050300
     void sceneGraphError(QQuickWindow::SceneGraphError, const QString &message);
 #endif
@@ -106,62 +78,63 @@ private:
     void facilitateQml(QQmlEngine *engine);
 
     QWidget *m_modeWidget;
-    QuickContainer *m_welcomePage;
+    QuickContainer *m_dashboardPage;
     QList<QObject*> m_pluginList;
     int m_activePlugin;
 };
 
-// ---  WelcomeMode
-WelcomeMode::WelcomeMode() :
+// ---  DashBoardMode
+DashBoardMode::DashBoardMode() :
     m_activePlugin(0)
 {
-    setDisplayName(tr("Welcome"));
-    QIcon qtLogo;
-    qtLogo.addFile(QLatin1String(Core::Constants::ICON_QTLOGO_32));
-    qtLogo.addFile(QLatin1String(Core::Constants::ICON_QTLOGO_64));
-    qtLogo.addFile(QLatin1String(Core::Constants::ICON_QTLOGO_128));
-    setIcon(qtLogo);
+    setPriority(DashBoard::Constants::P_MODE_DASHBOARD);
+    setDisplayName(tr("DashBoard"));
+    QIcon dashboardLogo;
+    dashboardLogo.addFile(QLatin1String(":/dashboard/images/mode_dashboard.png"));
+    dashboardLogo.addFile(QLatin1String(":/dashboard/images/mode_dashboard_2x.png"));
+    dashboardLogo.addFile(QLatin1String(":/dashboard/images/mode_dashboard_4x.png"));
+    setIcon(dashboardLogo);
     setPriority(Core::Constants::P_MODE_WELCOME);
     setId(Core::Constants::MODE_WELCOME);
     setContextHelpId(QLatin1String("Qt Creator Manual"));
     setContext(Core::Context(Core::Constants::C_WELCOME_MODE));
 
     m_modeWidget = new QWidget;
-    m_modeWidget->setObjectName(QLatin1String("WelcomePageModeWidget"));
+    m_modeWidget->setObjectName(QLatin1String("DashBoardPageModeWidget"));
     QVBoxLayout *layout = new QVBoxLayout(m_modeWidget);
     layout->setMargin(0);
     layout->setSpacing(0);
 
-    m_welcomePage = new QuickContainer();
-    m_welcomePage->setResizeMode(QuickContainer::SizeRootObjectToView);
+    m_dashboardPage = new QuickContainer();
+    m_dashboardPage->setResizeMode(QuickContainer::SizeRootObjectToView);
 
-    m_welcomePage->setObjectName(QLatin1String("WelcomePage"));
+    m_dashboardPage->setObjectName(QLatin1String("DashBoardPage"));
 
 #if QT_VERSION >= 0x050300
-    connect(m_welcomePage, SIGNAL(sceneGraphError(QQuickWindow::SceneGraphError,QString)),
+    connect(m_dashboardPage, SIGNAL(sceneGraphError(QQuickWindow::SceneGraphError,QString)),
             this, SLOT(sceneGraphError(QQuickWindow::SceneGraphError,QString)));
 #endif // Qt 5.3
 
     Utils::StyledBar* styledBar = new Utils::StyledBar(m_modeWidget);
-    styledBar->setObjectName(QLatin1String("WelcomePageStyledBar"));
+    styledBar->setObjectName(QLatin1String("DashBoardPageStyledBar"));
     layout->addWidget(styledBar);
 
 #ifdef USE_QUICK_WIDGET
-    m_welcomePage->setParent(m_modeWidget);
-    layout->addWidget(m_welcomePage);
+    m_dashboardPage->setParent(m_modeWidget);
+    layout->addWidget(m_dashboardPage);
 #else
-    QWidget *container = QWidget::createWindowContainer(m_welcomePage, m_modeWidget);
+    QWidget *container = QWidget::createWindowContainer(m_dashboardPage, m_modeWidget);
     container->setProperty("nativeAncestors", true);
     m_modeWidget->setLayout(layout);
     layout->addWidget(container);
 #endif // USE_QUICK_WIDGET
 
-    connect(PluginManager::instance(), SIGNAL(objectAdded(QObject*)), SLOT(welcomePluginAdded(QObject*)));
+    connect(PluginManager::instance(), SIGNAL(objectAdded(QObject*)), SLOT(dashboardPluginAdded(QObject*)));
 
     setWidget(m_modeWidget);
 }
 
-WelcomeMode::~WelcomeMode()
+DashBoardMode::~DashBoardMode()
 {
     QSettings *settings = Core::ICore::settings();
     settings->setValue(QLatin1String(currentPageSettingsKeyC), activePlugin());
@@ -169,11 +142,11 @@ WelcomeMode::~WelcomeMode()
 }
 
 #if QT_VERSION >= 0x050300
-void WelcomeMode::sceneGraphError(QQuickWindow::SceneGraphError, const QString &message)
+void DashBoardMode::sceneGraphError(QQuickWindow::SceneGraphError, const QString &message)
 {
     QMessageBox *messageBox =
         new QMessageBox(QMessageBox::Warning,
-                        tr("Welcome Mode Load Error"), message,
+                        tr("DashBoard Mode Load Error"), message,
                         QMessageBox::Close, m_modeWidget);
     messageBox->setModal(false);
     messageBox->setAttribute(Qt::WA_DeleteOnClose);
@@ -181,7 +154,7 @@ void WelcomeMode::sceneGraphError(QQuickWindow::SceneGraphError, const QString &
 }
 #endif // Qt 5.3
 
-void WelcomeMode::facilitateQml(QQmlEngine * /*engine*/)
+void DashBoardMode::facilitateQml(QQmlEngine * /*engine*/)
 {
 }
 
@@ -197,13 +170,13 @@ static QString resourcePath()
     return Utils::FileUtils::normalizePathName(Core::ICore::resourcePath());
 }
 
-void WelcomeMode::initPlugins()
+void DashBoardMode::initPlugins()
 {
     QSettings *settings = Core::ICore::settings();
     setActivePlugin(settings->value(QLatin1String(currentPageSettingsKeyC)).toInt());
 
-    QQmlContext *ctx = m_welcomePage->rootContext();
-    ctx->setContextProperty(QLatin1String("welcomeMode"), this);
+    QQmlContext *ctx = m_dashboardPage->rootContext();
+    ctx->setContextProperty(QLatin1String("dashboardMode"), this);
 
     QList<Utils::IWelcomePage*> duplicatePlugins = PluginManager::getObjects<Utils::IWelcomePage>();
     Utils::sort(duplicatePlugins, [](const Utils::IWelcomePage *l, const Utils::IWelcomePage *r) {
@@ -232,9 +205,9 @@ void WelcomeMode::initPlugins()
     }
 
 
-    QQmlEngine *engine = m_welcomePage->engine();
+    QQmlEngine *engine = m_dashboardPage->engine();
     QStringList importPathList = engine->importPathList();
-    importPathList << resourcePath() + QLatin1String("/welcomescreen");
+    importPathList << resourcePath() + QLatin1String("/dashboardscreen");
     engine->setImportPathList(importPathList);
     if (!debug)
         engine->setOutputWarningsToStandardError(false);
@@ -252,14 +225,14 @@ void WelcomeMode::initPlugins()
 
     ctx->setContextProperty(QLatin1String("pagesModel"), QVariant::fromValue(m_pluginList));
 
-    QString path = resourcePath() + QLatin1String("/welcomescreen/welcomescreen.qml");
+    QString path = resourcePath() + QLatin1String("/dashboardscreen/dashboardscreen.qml");
 
     // finally, load the root page
-    m_welcomePage->setSource(
+    m_dashboardPage->setSource(
             QUrl::fromLocalFile(path));
 }
 
-QString WelcomeMode::platform() const
+QString DashBoardMode::platform() const
 {
     switch (HostOsInfo::hostOs()) {
     case OsTypeWindows: return QLatin1String("windows");
@@ -270,7 +243,7 @@ QString WelcomeMode::platform() const
     }
 }
 
-void WelcomeMode::welcomePluginAdded(QObject *obj)
+void DashBoardMode::dashboardPluginAdded(QObject *obj)
 {
     QHash<Utils::IWelcomePage::Id, Utils::IWelcomePage*> pluginHash;
 
@@ -298,13 +271,13 @@ void WelcomeMode::welcomePluginAdded(QObject *obj)
         }
         m_pluginList.insert(insertPos, plugin);
         // update model through reset
-        QQmlContext *ctx = m_welcomePage->rootContext();
+        QQmlContext *ctx = m_dashboardPage->rootContext();
         ctx->setContextProperty(QLatin1String("pagesModel"), QVariant::fromValue(m_pluginList));
     }
 }
 
-WelcomePlugin::WelcomePlugin()
-  : m_welcomeMode(0)
+DashBoardPlugin::DashBoardPlugin()
+  : m_dashboardMode(0)
 {
 }
 
@@ -314,10 +287,10 @@ WelcomePlugin::WelcomePlugin()
     \a errorMessage can be used to pass an error message to the plugin system,
        if there was any.
 */
-bool WelcomePlugin::initialize(const QStringList & /* arguments */, QString * /* errorMessage */)
+bool DashBoardPlugin::initialize(const QStringList & /* arguments */, QString * /* errorMessage */)
 {
-    m_welcomeMode = new WelcomeMode;
-    addAutoReleasedObject(m_welcomeMode);
+    m_dashboardMode = new DashBoardMode;
+    addAutoReleasedObject(m_dashboardMode);
 
     return true;
 }
@@ -330,19 +303,19 @@ bool WelcomePlugin::initialize(const QStringList & /* arguments */, QString * /*
     interested in. These objects can now be requested through the
     PluginManagerInterface.
 
-    The WelcomePlugin doesn't need things from other plugins, so it does
+    The DashBoardPlugin doesn't need things from other plugins, so it does
     nothing here.
 */
-void WelcomePlugin::extensionsInitialized()
+void DashBoardPlugin::extensionsInitialized()
 {
-    m_welcomeMode->initPlugins();
-    Core::ModeManager::activateMode(m_welcomeMode->id());
+    m_dashboardMode->initPlugins();
+    Core::ModeManager::activateMode(m_dashboardMode->id());
 }
 
 } // namespace Internal
-} // namespace Welcome
+} // namespace DashBoard
 
 
-Q_EXPORT_PLUGIN(Welcome::Internal::WelcomePlugin)
+Q_EXPORT_PLUGIN(DashBoard::Internal::DashBoardPlugin)
 
-#include "welcomeplugin.moc"
+#include "dashboardplugin.moc"
