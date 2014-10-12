@@ -31,8 +31,6 @@
 #include "command_p.h"
 #include <coreplugin/dialogs/shortcutsettings.h>
 
-#include <app/app_version.h>
-
 #include <utils/qtcassert.h>
 
 #include <utils/fileutils.h>
@@ -140,7 +138,7 @@ bool CommandsFile::exportCommands(const QList<ShortcutItem *> &items)
         w.writeStartDocument();
         w.writeDTD(QLatin1String("<!DOCTYPE KeyboardMappingScheme>"));
         w.writeComment(QString::fromLatin1(" Written by Qt Creator %1, %2. ").
-                       arg(QLatin1String(Core::Constants::APP_VERSION_LONG),
+                       arg(QCoreApplication::applicationVersion(),
                            QDateTime::currentDateTime().toString(Qt::ISODate)));
         w.writeStartElement(ctx.mappingElement);
         foreach (const ShortcutItem *item, items) {

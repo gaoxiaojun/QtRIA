@@ -53,7 +53,6 @@
 #include "statusbarwidget.h"
 #include "windowsupport.h"
 
-#include <app/app_version.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actionmanager_p.h>
@@ -146,9 +145,7 @@ MainWindow::MainWindow() :
     setWindowTitle(tr("Qt Creator"));
     if (!Utils::HostOsInfo::isMacHost())
         QApplication::setWindowIcon(QIcon(QLatin1String(Constants::ICON_QTLOGO_128)));
-    QCoreApplication::setApplicationName(QLatin1String("QtCreator"));
-    QCoreApplication::setApplicationVersion(QLatin1String(Core::Constants::APP_VERSION_LONG));
-    QCoreApplication::setOrganizationName(QLatin1String(Constants::APP_SETTINGSVARIANT_STR));
+
     QString baseName = QApplication::style()->objectName();
     if (Utils::HostOsInfo::isAnyUnixHost() && !Utils::HostOsInfo::isMacHost()) {
         if (baseName == QLatin1String("windows")) {

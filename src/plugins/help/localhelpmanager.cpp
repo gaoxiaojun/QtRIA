@@ -33,7 +33,6 @@
 #include "helpconstants.h"
 #include "helpviewer.h"
 
-#include <app/app_version.h>
 #include <coreplugin/helpmanager.h>
 
 #include <QMutexLocker>
@@ -114,8 +113,7 @@ BookmarkManager& LocalHelpManager::bookmarkManager()
             m_bookmarkManager = new BookmarkManager;
             m_bookmarkManager->setupBookmarkModels();
             const QString &url = QString::fromLatin1("qthelp://org.qt-project.qtcreator."
-                "%1%2%3/doc/index.html").arg(APP_VERSION_MAJOR).arg(APP_VERSION_MINOR)
-                .arg(APP_VERSION_RELEASE);
+                "%1/doc/index.html").arg(QCoreApplication::applicationVersion());
             helpEngine().setCustomValue(QLatin1String("DefaultHomePage"), url);
         }
     }

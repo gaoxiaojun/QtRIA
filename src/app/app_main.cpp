@@ -61,7 +61,6 @@ using namespace ExtensionSystem;
 
 enum { OptionIndent = 4, DescriptionIndent = 34 };
 
-QString appName;
 const char corePluginNameC[] = "Core";
 const char fixedOptionsC[] =
 " [OPTION]... [FILE]...\n"
@@ -103,12 +102,12 @@ static inline void toHtml(QString &t)
 static void displayHelpText(QString t) // No console on Windows.
 {
     toHtml(t);
-    QMessageBox::information(0, appName, t);
+    QMessageBox::information(0, QCoreApplication::applicationName(), t);
 }
 
 static void displayError(const QString &t) // No console on Windows.
 {
-    QMessageBox::critical(0, appName, t);
+    QMessageBox::critical(0, QCoreApplication::applicationName(), t);
 }
 
 #else
@@ -129,7 +128,7 @@ static void printVersion(const PluginSpec *coreplugin)
 {
     QString version;
     QTextStream str(&version);
-    str << '\n' << appName << ' ' << coreplugin->version()<< " based on Qt " << qVersion() << "\n\n";
+    str << '\n' << QCoreApplication::applicationName() << ' ' << coreplugin->version()<< " based on Qt " << qVersion() << "\n\n";
     PluginManager::formatPluginVersions(str);
     displayHelpText(version);
 }
@@ -194,56 +193,47 @@ static inline QStringList getPluginPaths()
     const QString rootDirPath = rootDir.canonicalPath();
     //qDebug() << "rootDirPath:" << rootDirPath;
 
-#if !defined(Q_OS_MAC)
-    // 1) "plugins" (Win/Linux)
     QString pluginPath = rootDirPath;
-    pluginPath += QLatin1Char('/');
-    //pluginPath += QLatin1String(APP_LIBRARY_BASENAME);
+#if !defined(Q_OS_MAC)
     pluginPath += QLatin1String("/plugins");
-    rc.push_back(pluginPath);
 #else
-    // 2) "PlugIns" (OS X)
-    QString pluginPath = rootDirPath;
     pluginPath += QLatin1String("/PlugIns");
-    rc.push_back(pluginPath);
 #endif
-    // 3) <localappdata>/plugins/<ideversion>
-    //    where <localappdata> is e.g.
-    //    "%LOCALAPPDATA%\QtProject\qforex" on Windows Vista and later
-    //    "$XDG_DATA_HOME/data/QtProject/qforex" or "~/.local/share/data/QtProject/qforex" on Linux
-    //    "~/Library/Application Support/QtProject/QForex" on Mac
-    QStringList paths = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
-    pluginPath = QStandardPaths::standardLocations(QStandardPaths::DataLocation).at(0);
+    rc.push_back(pluginPath);
 
-    qDebug() << "Paths: " << paths << "Path: " << pluginPath;
-    pluginPath += QLatin1Char('/')
-            + QLatin1String(Core::Constants::APP_SETTINGSVARIANT_STR)
-            + QLatin1Char('/');
-#if !defined(Q_OS_MAC)
-    pluginPath += QLatin1String("qforex");
-#else
-    pluginPath += QLatin1String("QForex");
-#endif
-    pluginPath += QLatin1String("/plugins/");
-    pluginPath += QLatin1String(Core::Constants::APP_VERSION_LONG);
-    rc.push_back(pluginPath);
+    //   <localappdata>/APP_NAME/APP_VERSION/plugins/
+    //    where <localappdata> is e.g.
+    //    "%LOCALAPPDATA%\APP_NAME" on Windows Vista and later
+    //    "$XDG_DATA_HOME/data/APP_NAME/" or "~/.local/share/data/APP_NAME" on Linux
+    //    "~/Library/Application Support/APP_NAME" on Mac
+    QStringList paths = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+
+    foreach(QString path, paths) {
+        if (!path.endsWith('/'))
+            path += QLatin1Char('/');
+        path += QLatin1String(Application::Constants::APP_COMPACT_VERSION_STR);
+        path += QLatin1String("/plugins/");
+        rc.push_back(path);
+    }
     return rc;
 }
 
 static QSettings *createUserSettings()
 {
     return new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                         QLatin1String(Core::Constants::APP_SETTINGSVARIANT_STR),
+                         QLatin1String(Application::Constants::APP_SETTINGSVARIANT_STR),
                          QLatin1String("QForex"));
 }
 
 static inline QSettings *userSettings()
 {
     QSettings *settings = createUserSettings();
-    const QString fromVariant = QLatin1String(Core::Constants::APP_COPY_SETTINGS_FROM_VARIANT_STR);
+    qDebug() << settings;
+    const QString fromVariant = QLatin1String(Application::Constants::APP_COPY_SETTINGS_FROM_VARIANT_STR);
     if (fromVariant.isEmpty())
         return settings;
 
+    qDebug() << settings;
     // Copy old settings to new ones:
     QFileInfo pathFi = QFileInfo(settings->fileName());
     if (pathFi.exists()) // already copied.
@@ -288,10 +278,8 @@ static inline QSettings *userSettings()
 
 int main(int argc, char **argv)
 {
-    QString fullName = QLatin1String(argv[0]);
-    appName = QFileInfo(fullName).baseName();
-
     QLoggingCategory::setFilterRules(QLatin1String("qtc.*.debug=false"));
+
 #ifdef Q_OS_MAC
     // increase the number of file that can be opened in QForex.
     struct rlimit rl;
@@ -301,15 +289,15 @@ int main(int argc, char **argv)
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-    // QML is unusable with the xlib backend
-    //QApplication::setGraphicsSystem(QLatin1String("raster"));
-#endif
+    QCoreApplication::setApplicationName(QLatin1String(Application::Constants::APP_NAME_STR));
+    QCoreApplication::setApplicationVersion(QLatin1String(Application::Constants::APP_VERSION_STR));
+    QCoreApplication::setOrganizationName(QLatin1String(Application::Constants::APP_AUTHOR_STR));
+    QCoreApplication::setOrganizationDomain(QLatin1String(Application::Constants::APP_AUTHOR_STR));
 
-    SharedTools::QtSingleApplication app(appName, argc, argv);
+    SharedTools::QtSingleApplication app(QCoreApplication::applicationName(), argc, argv);
 
     const int threadCount = QThreadPool::globalInstance()->maxThreadCount();
-    QThreadPool::globalInstance()->setMaxThreadCount(qMax(4, 2 * threadCount));
+    QThreadPool::globalInstance()->setMaxThreadCount(qMax(8, 2 * threadCount));
 
     setupCrashHandler(); // Display a backtrace once a serious signal is delivered.
 
@@ -343,7 +331,7 @@ int main(int argc, char **argv)
     }
     if (settingsPath.isEmpty() && testOptionProvided) {
         settingsPath = QDir::tempPath() + QString::fromLatin1("/qtc-%1-test-settings")
-                .arg(QLatin1String(Core::Constants::APP_VERSION_LONG));
+                .arg(QLatin1String(Application::Constants::APP_VERSION_STR));
         settingsPath = QDir::cleanPath(settingsPath);
     }
     if (!settingsPath.isEmpty())
@@ -357,7 +345,7 @@ int main(int argc, char **argv)
     QSettings *settings = userSettings();
 
     QSettings *globalSettings = new QSettings(QSettings::IniFormat, QSettings::SystemScope,
-                                              QLatin1String(Core::Constants::APP_SETTINGSVARIANT_STR),
+                                              QLatin1String(Application::Constants::APP_SETTINGSVARIANT_STR),
                                               QLatin1String("QtCreator"));
     PluginManager pluginManager;
     PluginManager::setFileExtension(QLatin1String("pluginspec"));
@@ -373,17 +361,17 @@ int main(int argc, char **argv)
     QString overrideLanguage = settings->value(QLatin1String("General/OverrideLanguage")).toString();
     if (!overrideLanguage.isEmpty())
         uiLanguages.prepend(overrideLanguage);
-    const QString &creatorTrPath = QCoreApplication::applicationDirPath()
+    const QString &appTrPath = QCoreApplication::applicationDirPath()
             + QLatin1String(SHARE_PATH "/translations");
     foreach (QString locale, uiLanguages) {
 
         locale = QLocale(locale).name();
 
-        if (translator.load(QLatin1String("qforex_") + locale, creatorTrPath)) {
+        if (translator.load(QLatin1String(Application::Constants::APP_NAME_STR) + QLatin1Char('_') + locale, appTrPath)) {
             const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
             const QString &qtTrFile = QLatin1String("qt_") + locale;
-            // Binary installer puts Qt tr files into creatorTrPath
-            if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, creatorTrPath)) {
+            // Binary installer puts Qt tr files into appTrPath
+            if (qtTranslator.load(qtTrFile, qtTrPath) || qtTranslator.load(qtTrFile, appTrPath)) {
                 app.installTranslator(&translator);
                 app.installTranslator(&qtTranslator);
                 app.setProperty("qtc_locale", locale);

@@ -3,12 +3,6 @@
 
 #include <QtGlobal>
 
-#ifdef USE_APP_VERSION
-#include <app/app_version.h>
-#else
-#include <ide_version.h>
-#endif
-
 #define IDE_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 #define IDE_VER IDE_VERSION_CHECK(IDE_VERSION_MAJOR, IDE_VERSION_MINOR, IDE_VERSION_RELEASE)
 

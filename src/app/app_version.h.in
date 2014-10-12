@@ -30,47 +30,33 @@
 #ifndef APP_VERSION_H
 #define APP_VERSION_H
 
-namespace Core {
+namespace Application {
 namespace Constants {
 
 #define STRINGIFY_INTERNAL(x) #x
 #define STRINGIFY(x) STRINGIFY_INTERNAL(x)
 
 #define APP_VERSION ${APPLICATION_VERSION}
-#define APP_VERSION_STR STRINGIFY(APP_VERSION)
-#define APP_AUTHOR_STR ${APPLICATION_AUTHOR}
+#define APP_COMPACT_VERSION ${APPLICATION_VERSION}
 #define APP_NAME ${APPLICATION_NAME}
-#define APP_NAME_STR STRINGIFY(APP_NAME)
+#define APP_AUTHOR ${APPLICATION_AUTHOR}
+#define APP_DOMAIN ${APPLICATION_AUTHOR}
+
 
 #define APP_VERSION_MAJOR ${APPLICATION_VERSION_MAJOR}
 #define APP_VERSION_MINOR ${APPLICATION_VERSION_MINOR}
 #define APP_VERSION_RELEASE ${APPLICATION_VERSION_MICRO}
 
-const char * const APP_VERSION_LONG      = APP_VERSION_STR;
+const char * const APP_NAME_STR = STRINGIFY(APP_NAME);
+const char * const APP_AUTHOR_STR = STRINGIFY(APP_AUTHOR);
+const char * const APP_DOMAIN_STR = STRINGIFY(APP_DOMAIN);
+const char * const APP_VERSION_STR      = STRINGIFY(APP_VERSION);
+const char * const APP_COMPACT_VERSION_STR = STRINGIFY(APP_COMPACT_VERSION);
 
-/*
-#ifdef APP_VERSION_DESCRIPTION
-const char * const APP_VERSION_DESCRIPTION_STR = STRINGIFY(APP_VERSION_DESCRIPTION);
-#else
-const char * const APP_VERSION_DESCRIPTION_STR = \"\";
-#endif
-
-#ifdef APP_REVISION
-const char * const APP_REVISION_STR      = STRINGIFY(APP_REVISION);
-#else
-const char * const APP_REVISION_STR      = \"\";
-#endif
-*/
 // changes the path where the settings are saved to
 const char * const APP_SETTINGSVARIANT_STR      = STRINGIFY(APP_NAME);
 
 const char * const APP_COPY_SETTINGS_FROM_VARIANT_STR = STRINGIFY(APP_NAME);
-
-const char * const APP_LIBRARY_BASENAME = "lib";
-#undef APP_VERSION
-#undef APP_VERSION_STR
-#undef STRINGIFY
-#undef STRINGIFY_INTERNAL
 
 } // Constants
 } // Core

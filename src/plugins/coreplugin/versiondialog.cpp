@@ -29,7 +29,6 @@
 
 #include "versiondialog.h"
 
-#include <app/app_version.h>
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/icore.h>
 #include <utils/qtcassert.h>
@@ -58,7 +57,7 @@ VersionDialog::VersionDialog(QWidget *parent)
     QString ideRev;
 #ifdef APP_REVISION
      //: This gets conditionally inserted as argument %8 into the description string.
-     ideRev = tr("From revision %1<br/>").arg(QString::fromLatin1(Constants::APP_REVISION_STR).left(10));
+     ideRev = tr("From revision %1<br/>").arg(QCoreApplication::applicationVersion().left(10));
 #endif
 
      const QString description = tr(

@@ -30,7 +30,6 @@
 #include "icore.h"
 #include "windowsupport.h"
 
-#include <app/app_version.h>
 #include <extensionsystem/pluginmanager.h>
 
 #include <QSysInfo>
@@ -463,8 +462,7 @@ QString ICore::versionString()
 #ifdef APP_VERSION_DESCRIPTION
     ideVersionDescription = tr(" (%1)").arg(QLatin1String(Constants::APP_VERSION_DESCRIPTION_STR));
 #endif
-    return tr("Qt Creator %1%2").arg(QLatin1String(Constants::APP_VERSION_LONG),
-                                     ideVersionDescription);
+    return tr("Qt Creator %1%2").arg(QCoreApplication::applicationVersion(), ideVersionDescription);
 }
 
 QString ICore::buildCompatibilityString()

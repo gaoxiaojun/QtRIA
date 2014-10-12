@@ -55,7 +55,6 @@
 #include <contentwindow.h>
 #include <indexwindow.h>
 
-#include <app/app_version.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/actionmanager/command.h>
@@ -365,8 +364,8 @@ ExtensionSystem::IPlugin::ShutdownFlag HelpPlugin::aboutToShutdown()
 
 void HelpPlugin::unregisterOldQtCreatorDocumentation()
 {
-    const QString &nsInternal = QString::fromLatin1("org.qt-project.qtcreator.%1%2%3")
-        .arg(APP_VERSION_MAJOR).arg(APP_VERSION_MINOR).arg(APP_VERSION_RELEASE);
+    const QString &nsInternal = QString::fromLatin1("org.qt-project.qtcreator.%1%")
+        .arg(QCoreApplication::applicationVersion());
 
     QStringList documentationToUnregister;
     foreach (const QString &ns, HelpManager::registeredNamespaces()) {
@@ -473,8 +472,8 @@ void HelpPlugin::setupUi()
 
 void HelpPlugin::resetFilter()
 {
-    const QString &filterInternal = QString::fromLatin1("Qt Creator %1.%2.%3")
-        .arg(APP_VERSION_MAJOR).arg(APP_VERSION_MINOR).arg(APP_VERSION_RELEASE);
+    const QString &filterInternal = QString::fromLatin1("Qt Creator %1")
+        .arg(QCoreApplication::applicationVersion());
     QRegExp filterRegExp(QLatin1String("Qt Creator \\d*\\.\\d*\\.\\d*"));
 
     QHelpEngineCore *engine = &LocalHelpManager::helpEngine();
