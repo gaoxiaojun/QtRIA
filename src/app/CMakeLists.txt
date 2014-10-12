@@ -16,6 +16,15 @@ set(APP_SOURCES
     qtsingleapplication.cpp
 )
 
+set(APP_RESOURCES
+    app.qrc
+)
+
+qt5_add_resources(APP_RESOURCES_HEADERS ${APP_RESOURCES})
+list(APPEND APP_SOURCES
+        ${APP_RESOURCES_HEADERS}
+)
+
 if(WIN32)
    list(APPEND APP_SOURCES qtlockedfile_win.cpp)
 else()

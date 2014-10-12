@@ -93,9 +93,6 @@ public:
     static QString documentationPath();
     static QString libexecPath();
 
-    static QString versionString();
-    static QString buildCompatibilityString();
-
     static QWidget *mainWindow();
     static QWidget *dialogParent();
     static QStatusBar *statusBar();

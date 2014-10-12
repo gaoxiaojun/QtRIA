@@ -50,6 +50,7 @@
 #include <QTranslator>
 #include <QUrl>
 #include <QVariant>
+#include <QPixmap>
 
 #include <QNetworkProxyFactory>
 
@@ -267,7 +268,8 @@ int main(int argc, char **argv)
     qApp->setProperty("APPLICATION_VERSION_MINOR", QLatin1String(Application::Constants::APP_VERSION_MINOR));
     qApp->setProperty("APPLICATION_VERSION_MICRO", QLatin1String(Application::Constants::APP_VERSION_MICRO));
     qApp->setProperty("APPLICATION_VERSION_PATCH", QLatin1String(Application::Constants::APP_VERSION_PATCH));
-
+    qApp->setProperty("APPLICATION_ABOUT_ICON", QLatin1String(":/application/images/about.png"));
+    qApp->setProperty("APPLICATION_ABOUT", QString::fromLatin1("<h3>%1</h3>").arg(QCoreApplication::applicationName()));
 
     // Manually determine -settingspath command line option
     // We can't use the regular way of the plugin manager, because that needs to parse pluginspecs

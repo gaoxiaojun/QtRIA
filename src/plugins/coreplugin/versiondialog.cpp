@@ -38,6 +38,8 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
+#include <QApplication>
+#include <QtDebug>
 
 using namespace Core;
 using namespace Core::Internal;
@@ -47,38 +49,15 @@ VersionDialog::VersionDialog(QWidget *parent)
 {
     // We need to set the window icon explicitly here since for some reason the
     // application icon isn't used when the size of the dialog is fixed (at least not on X11/GNOME)
-    setWindowIcon(QIcon(QLatin1String(Constants::ICON_QTLOGO_128)));
+    QString iconPath = qApp->property("APPLICATION_ABOUT_ICON").toString();
+    setWindowIcon(QIcon(iconPath));
 
-    setWindowTitle(tr("About Qt Creator"));
+    setWindowTitle(tr("About %1").arg(QCoreApplication::applicationName()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     QGridLayout *layout = new QGridLayout(this);
     layout->setSizeConstraint(QLayout::SetFixedSize);
 
-    QString ideRev;
-#ifdef APP_REVISION
-     //: This gets conditionally inserted as argument %8 into the description string.
-     ideRev = tr("From revision %1<br/>").arg(QCoreApplication::applicationVersion().left(10));
-#endif
-
-     const QString description = tr(
-        "<h3>%1</h3>"
-        "%2<br/>"
-        "<br/>"
-        "Built on %3 at %4<br />"
-        "<br/>"
-        "%5"
-        "<br/>"
-        "Copyright Dailypips. All rights reserved.<br/>"
-        "<br/>"
-        "The program is provided AS IS with NO WARRANTY OF ANY KIND, "
-        "INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A "
-        "PARTICULAR PURPOSE.<br/>")
-        .arg(ICore::versionString(),
-             ICore::buildCompatibilityString(),
-             QLatin1String(__DATE__), QLatin1String(__TIME__),
-             ideRev);
-
-    QLabel *copyRightLabel = new QLabel(description);
+    QLabel *copyRightLabel = new QLabel(qApp->property("APPLICATION_ABOUT").toString());
     copyRightLabel->setWordWrap(true);
     copyRightLabel->setOpenExternalLinks(true);
     copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -90,7 +69,7 @@ VersionDialog::VersionDialog(QWidget *parent)
     connect(buttonBox , SIGNAL(rejected()), this, SLOT(reject()));
 
     QLabel *logoLabel = new QLabel;
-    logoLabel->setPixmap(QPixmap(QLatin1String(Constants::ICON_QTLOGO_128)));
+    logoLabel->setPixmap(QPixmap(iconPath));
     layout->addWidget(logoLabel , 0, 0, 1, 1);
     layout->addWidget(copyRightLabel, 0, 1, 4, 4);
     layout->addWidget(buttonBox, 4, 0, 1, 5);
