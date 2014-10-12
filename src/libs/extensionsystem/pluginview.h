@@ -27,30 +27,65 @@
 **
 ****************************************************************************/
 
-#ifndef PLUGIN3_H
-#define PLUGIN3_H
+#ifndef PLUGINVIEW_H
+#define PLUGINVIEW_H
 
-#include <extensionsystem/iplugin.h>
+#include "extensionsystem_global.h"
 
-#include <QObject>
-#include <QString>
+#include <QHash>
+#include <QWidget>
+#include <QIcon>
 
-namespace Plugin3 {
+QT_BEGIN_NAMESPACE
+class QTreeWidgetItem;
+QT_END_NAMESPACE
 
-class MyPlugin3 : public ExtensionSystem::IPlugin
+namespace ExtensionSystem {
+
+class PluginManager;
+class PluginSpec;
+class PluginCollection;
+class PluginTreeWidget;
+
+class EXTENSIONSYSTEM_EXPORT PluginView : public QWidget
 {
     Q_OBJECT
 
 public:
-    MyPlugin3();
+    explicit PluginView(QWidget *parent = 0);
+    ~PluginView();
 
-    bool initialize(const QStringList &arguments, QString *errorString);
-    void extensionsInitialized();
+    PluginSpec *currentPlugin() const;
+
+signals:
+    void currentPluginChanged(ExtensionSystem::PluginSpec *spec);
+    void pluginActivated(ExtensionSystem::PluginSpec *spec);
+    void pluginSettingsChanged(ExtensionSystem::PluginSpec *spec);
+
+private slots:
+    void updatePluginSettings(QTreeWidgetItem *item, int column);
+    void updateList();
+    void selectPlugin(QTreeWidgetItem *current);
+    void activatePlugin(QTreeWidgetItem *item);
 
 private:
-    bool initializeCalled;
+    enum ParsedState { ParsedNone = 1, ParsedPartial = 2, ParsedAll = 4, ParsedWithErrors = 8};
+    QIcon iconForState(int state);
+    void updatePluginDependencies();
+    int parsePluginSpecs(QTreeWidgetItem *parentItem, Qt::CheckState &groupState, QList<PluginSpec*> plugins);
+
+    PluginTreeWidget *m_categoryWidget;
+    QList<QTreeWidgetItem*> m_items;
+    QHash<PluginSpec*, QTreeWidgetItem*> m_specToItem;
+
+    QIcon m_okIcon;
+    QIcon m_errorIcon;
+    QIcon m_notLoadedIcon;
+    bool m_allowCheckStateUpdate;
+
+    const int C_LOAD;
 };
 
-} // namespace Plugin3
+} // namespae ExtensionSystem
 
-#endif // PLUGIN3_H
+#endif // PLUGIN_VIEW_H

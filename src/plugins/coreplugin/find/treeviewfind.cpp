@@ -29,7 +29,7 @@
 
 #include "treeviewfind.h"
 
-#include <aggregation/aggregate.h>
+#include <extensionsystem/aggregate.h>
 #include <coreplugin/findplaceholder.h>
 
 #include <QModelIndex>

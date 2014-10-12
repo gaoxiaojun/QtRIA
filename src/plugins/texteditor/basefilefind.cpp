@@ -30,7 +30,7 @@
 #include "basefilefind.h"
 #include "basefilefind_p.h"
 
-#include <aggregation/aggregate.h>
+#include <extensionsystem/aggregate.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/progressmanager/progressmanager.h>
 #include <coreplugin/progressmanager/futureprogress.h>

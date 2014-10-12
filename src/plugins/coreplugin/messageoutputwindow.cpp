@@ -33,7 +33,7 @@
 #include "coreconstants.h"
 #include "find/basetextfind.h"
 
-#include <aggregation/aggregate.h>
+#include <extensionsystem/aggregate.h>
 
 using namespace Core::Internal;
 

@@ -32,6 +32,7 @@ set(APP_TARGET_LIBRARIES
     ${utils_LIBRARYIES}
     Qt5::Core
     Qt5::Widgets
+    Qt5::Network
 )
 
 add_executable(${PROJECT_NAME} ${APP_SOURCES})

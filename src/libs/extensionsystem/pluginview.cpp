@@ -31,7 +31,6 @@
 #include "pluginmanager.h"
 #include "pluginspec.h"
 #include "plugincollection.h"
-#include <utils/itemviews.h>
 
 #include <QDebug>
 #include <QDir>
@@ -40,6 +39,69 @@
 #include <QPalette>
 #include <QTreeWidgetItem>
 
+
+#include <QKeyEvent>
+#include <QVariant>
+#include <QTreeWidget>
+
+static const char activationModeC[] = "ActivationMode";
+
+enum ActivationMode {
+    DoubleClickActivation = 0,
+    SingleClickActivation = 1,
+    PlatformDefaultActivation = 2
+};
+
+namespace ExtensionSystem {
+template<class BaseT>
+class View : public BaseT
+{
+public:
+    View(QWidget *parent = 0)
+        : BaseT(parent)
+    {}
+    void setActivationMode(ActivationMode mode)
+    {
+        if (mode == PlatformDefaultActivation)
+            BaseT::setProperty(activationModeC, QVariant());
+        else
+            BaseT::setProperty(activationModeC, QVariant(bool(mode)));
+    }
+
+    ActivationMode activationMode() const
+    {
+        QVariant v = BaseT::property(activationModeC);
+        if (!v.isValid())
+            return PlatformDefaultActivation;
+        return v.toBool() ? SingleClickActivation : DoubleClickActivation;
+    }
+
+    void keyPressEvent(QKeyEvent *event)
+    {
+        // Note: This always eats the event
+        // whereas QAbstractItemView never eats it
+        if ((event->key() == Qt::Key_Return
+                || event->key() == Qt::Key_Enter)
+                && event->modifiers() == 0
+                && BaseT::currentIndex().isValid()
+                && BaseT::state() != QAbstractItemView::EditingState) {
+            emit BaseT::activated(BaseT::currentIndex());
+            return;
+        }
+        BaseT::keyPressEvent(event);
+    }
+
+};
+
+class PluginTreeWidget : public View<QTreeWidget>
+{
+    Q_OBJECT
+public:
+    PluginTreeWidget(QWidget *parent = 0)
+        : View<QTreeWidget>(parent)
+    {}
+};
+}
 /*!
     \class ExtensionSystem::PluginView
     \brief The PluginView class implements a widget that shows a list of all
@@ -79,7 +141,7 @@ PluginView::PluginView(QWidget *parent)
       m_allowCheckStateUpdate(true),
       C_LOAD(1)
 {
-    m_categoryWidget = new Utils::TreeWidget(this);
+    m_categoryWidget = new PluginTreeWidget(this);
     m_categoryWidget->setAlternatingRowColors(true);
     m_categoryWidget->setIndentation(20);
     m_categoryWidget->setUniformRowHeights(true);
@@ -88,7 +150,7 @@ PluginView::PluginView(QWidget *parent)
     m_categoryWidget->setColumnWidth(C_LOAD, 40);
     m_categoryWidget->header()->setDefaultSectionSize(120);
     m_categoryWidget->header()->setMinimumSectionSize(35);
-    m_categoryWidget->setActivationMode(Utils::DoubleClickActivation);
+    m_categoryWidget->setActivationMode(DoubleClickActivation);
 
     QTreeWidgetItem *headerItem = m_categoryWidget->headerItem();
     headerItem->setText(0, tr("Name"));
@@ -379,3 +441,5 @@ void PluginView::updatePluginDependencies()
             childItem->parent()->setExpanded(true);
     }
 }
+
+#include "pluginview.moc"

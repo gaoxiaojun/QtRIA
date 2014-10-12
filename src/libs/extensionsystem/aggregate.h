@@ -30,7 +30,7 @@
 #ifndef AGGREGATE_H
 #define AGGREGATE_H
 
-#include "aggregation_global.h"
+#include "extensionsystem_global.h"
 
 #include <QObject>
 #include <QList>
@@ -40,7 +40,7 @@
 
 namespace Aggregation {
 
-class AGGREGATION_EXPORT Aggregate : public QObject
+class EXTENSIONSYSTEM_EXPORT Aggregate : public QObject
 {
     Q_OBJECT
 

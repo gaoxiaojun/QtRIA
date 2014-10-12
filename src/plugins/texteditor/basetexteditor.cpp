@@ -50,7 +50,7 @@
 #include <texteditor/codeassist/codeassistant.h>
 #include <texteditor/codeassist/defaultassistinterface.h>
 
-#include <aggregation/aggregate.h>
+#include <extensionsystem/aggregate.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/coreconstants.h>

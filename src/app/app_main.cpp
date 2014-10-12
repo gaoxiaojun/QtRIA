@@ -62,6 +62,7 @@ using namespace ExtensionSystem;
 enum { OptionIndent = 4, DescriptionIndent = 34 };
 
 const char corePluginNameC[] = "Core";
+
 const char fixedOptionsC[] =
 " [OPTION]... [FILE]...\n"
 "Options:\n"
@@ -218,63 +219,21 @@ static inline QStringList getPluginPaths()
     return rc;
 }
 
-static QSettings *createUserSettings()
+static QString getResourcePaths()
 {
-    return new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                         QLatin1String(Application::Constants::APP_SETTINGSVARIANT_STR),
-                         QLatin1String("QForex"));
-}
+    QDir rootDir = QApplication::applicationDirPath();
+    rootDir.cdUp();
+    const QString rootDirPath = rootDir.canonicalPath();
 
-static inline QSettings *userSettings()
-{
-    QSettings *settings = createUserSettings();
-    qDebug() << settings;
-    const QString fromVariant = QLatin1String(Application::Constants::APP_COPY_SETTINGS_FROM_VARIANT_STR);
-    if (fromVariant.isEmpty())
-        return settings;
-
-    qDebug() << settings;
-    // Copy old settings to new ones:
-    QFileInfo pathFi = QFileInfo(settings->fileName());
-    if (pathFi.exists()) // already copied.
-        return settings;
-
-    QDir destDir = pathFi.absolutePath();
-    if (!destDir.exists())
-        destDir.mkpath(pathFi.absolutePath());
-
-    QDir srcDir = destDir;
-    srcDir.cdUp();
-    if (!srcDir.cd(fromVariant))
-        return settings;
-
-    if (srcDir == destDir) // Nothing to copy and no settings yet
-        return settings;
-
-    QStringList entries = srcDir.entryList();
-    foreach (const QString &file, entries) {
-        const QString lowerFile = file.toLower();
-        if (lowerFile.startsWith(QLatin1String("profiles.xml"))
-                || lowerFile.startsWith(QLatin1String("toolchains.xml"))
-                || lowerFile.startsWith(QLatin1String("qtversion.xml"))
-                || lowerFile.startsWith(QLatin1String("devices.xml"))
-                || lowerFile.startsWith(QLatin1String("debuggers.xml"))
-                || lowerFile.startsWith(QLatin1String("qforex.")))
-            QFile::copy(srcDir.absoluteFilePath(file), destDir.absoluteFilePath(file));
-        if (file == QLatin1String("qforex"))
-            copyRecursively(srcDir.absoluteFilePath(file), destDir.absoluteFilePath(file));
-    }
-
-    // Make sure to use the copied settings:
-    delete settings;
-    return createUserSettings();
-}
-
-#ifdef Q_OS_MAC
-#  define SHARE_PATH "/../Resources"
+    QString resourcePath = rootDirPath;
+#if !defined(Q_OS_MAC)
+    resourcePath += QLatin1String("/share");
 #else
-#  define SHARE_PATH "/../share/qforex"
+    resourcePath += QLatin1String("/Resources");
 #endif
+
+    return resourcePath;
+}
 
 int main(int argc, char **argv)
 {
@@ -288,12 +247,7 @@ int main(int argc, char **argv)
     rl.rlim_cur = qMin((rlim_t)OPEN_MAX, rl.rlim_max);
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
-
-    QCoreApplication::setApplicationName(QLatin1String(Application::Constants::APP_NAME_STR));
-    QCoreApplication::setApplicationVersion(QLatin1String(Application::Constants::APP_VERSION_STR));
-    QCoreApplication::setOrganizationName(QLatin1String(Application::Constants::APP_AUTHOR_STR));
-    QCoreApplication::setOrganizationDomain(QLatin1String(Application::Constants::APP_AUTHOR_STR));
-
+    // Set Application Info
     SharedTools::QtSingleApplication app(QCoreApplication::applicationName(), argc, argv);
 
     const int threadCount = QThreadPool::globalInstance()->maxThreadCount();
@@ -302,6 +256,18 @@ int main(int argc, char **argv)
     setupCrashHandler(); // Display a backtrace once a serious signal is delivered.
 
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+
+    QCoreApplication::setApplicationName(QLatin1String(Application::Constants::APP_NAME_STR));
+    QCoreApplication::setApplicationVersion(QLatin1String(Application::Constants::APP_VERSION_STR));
+    QCoreApplication::setOrganizationName(QLatin1String(Application::Constants::APP_ORGNAME_STR));
+    QCoreApplication::setOrganizationDomain(QLatin1String(Application::Constants::APP_DOMAIN_STR));
+    qApp->setProperty("APPLICATION_AUTHOR", QLatin1String(Application::Constants::APP_AUTHOR_STR));
+    qApp->setProperty("APPLICATION_COMPACT_VERSION", QLatin1String(Application::Constants::APP_COMPACT_VERSION_STR));
+    qApp->setProperty("APPLICATION_VERSION_MAJOR", QLatin1String(Application::Constants::APP_VERSION_MAJOR));
+    qApp->setProperty("APPLICATION_VERSION_MINOR", QLatin1String(Application::Constants::APP_VERSION_MINOR));
+    qApp->setProperty("APPLICATION_VERSION_MICRO", QLatin1String(Application::Constants::APP_VERSION_MICRO));
+    qApp->setProperty("APPLICATION_VERSION_PATCH", QLatin1String(Application::Constants::APP_VERSION_PATCH));
+
 
     // Manually determine -settingspath command line option
     // We can't use the regular way of the plugin manager, because that needs to parse pluginspecs
@@ -337,16 +303,21 @@ int main(int argc, char **argv)
     if (!settingsPath.isEmpty())
         QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsPath);
 
+    qDebug() << "settingsPath: " << settingsPath;
+
     // Must be done before any QSettings class is created
-    QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope,
-                       QCoreApplication::applicationDirPath() + QLatin1String(SHARE_PATH));
+    QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, getResourcePaths());
     QSettings::setDefaultFormat(QSettings::IniFormat);
     // plugin manager takes control of this settings object
-    QSettings *settings = userSettings();
+    // format: ~/.config/APP_ORG_NAME/APP_NAME.ini
+    QSettings *settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                                    QCoreApplication::organizationName(),
+                                    QCoreApplication::applicationName());
 
     QSettings *globalSettings = new QSettings(QSettings::IniFormat, QSettings::SystemScope,
-                                              QLatin1String(Application::Constants::APP_SETTINGSVARIANT_STR),
-                                              QLatin1String("QtCreator"));
+                                              QCoreApplication::organizationName(),
+                                              QCoreApplication::applicationName());
+
     PluginManager pluginManager;
     PluginManager::setFileExtension(QLatin1String("pluginspec"));
     PluginManager::setGlobalSettings(globalSettings);
@@ -361,8 +332,8 @@ int main(int argc, char **argv)
     QString overrideLanguage = settings->value(QLatin1String("General/OverrideLanguage")).toString();
     if (!overrideLanguage.isEmpty())
         uiLanguages.prepend(overrideLanguage);
-    const QString &appTrPath = QCoreApplication::applicationDirPath()
-            + QLatin1String(SHARE_PATH "/translations");
+    const QString &appTrPath = getResourcePaths() + QLatin1String("/translations");
+    qDebug() << "TrPath:" << appTrPath;
     foreach (QString locale, uiLanguages) {
 
         locale = QLocale(locale).name();
@@ -402,6 +373,7 @@ int main(int argc, char **argv)
 #else // windows
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 #endif
+
     // Load
     const QStringList pluginPaths = getPluginPaths() + customPluginPaths;
     PluginManager::setPluginPaths(pluginPaths);

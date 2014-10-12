@@ -29,7 +29,7 @@
 
 #include "currentdocumentfind.h"
 
-#include <aggregation/aggregate.h>
+#include <extensionsystem/aggregate.h>
 #include <coreplugin/coreconstants.h>
 #include <utils/qtcassert.h>
 

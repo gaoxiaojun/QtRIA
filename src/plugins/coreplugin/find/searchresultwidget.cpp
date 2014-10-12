@@ -36,7 +36,7 @@
 #include "findplugin.h"
 #include "treeviewfind.h"
 
-#include <aggregation/aggregate.h>
+#include <extensionsystem/aggregate.h>
 #include <coreplugin/coreplugin.h>
 
 #include <QDir>

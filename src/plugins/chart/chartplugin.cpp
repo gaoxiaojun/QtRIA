@@ -50,7 +50,6 @@ bool ChartPlugin::initialize(const QStringList &arguments, QString *errorMessage
     Q_UNUSED(arguments)
     Q_UNUSED(errorMessage)
 
-
     /*// Register the action with the action manager
     Core::Command *command =
             Core::ActionManager::registerAction(
