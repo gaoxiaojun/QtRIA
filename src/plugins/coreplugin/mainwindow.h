@@ -73,7 +73,7 @@ class ProgressManagerPrivate;
 class ShortcutSettings;
 class MimeTypeSettings;
 class StatusBarManager;
-class VersionDialog;
+//class VersionDialog;
 class WindowSupport;
 class SystemEditor;
 
@@ -111,6 +111,7 @@ public:
 signals:
     void windowActivated();
     void newItemDialogRunningChanged();
+    void showAboutApplication(QWidget*);
 
 public slots:
     void newFile();
@@ -144,7 +145,6 @@ private slots:
     void aboutPlugins();
     void updateFocusWidget(QWidget *old, QWidget *now);
     void setSidebarVisible(bool visible);
-    void destroyVersionDialog();
     void openDroppedFiles(const QStringList &files);
     void restoreWindowState();
     void newItemDialogFinished();
@@ -178,7 +178,7 @@ private:
     NavigationWidget *m_navigationWidget;
     RightPaneWidget *m_rightPaneWidget;
     Core::StatusBarWidget *m_outputView;
-    VersionDialog *m_versionDialog;
+    //VersionDialog *m_versionDialog;
     QPointer<NewDialog> m_newDialog;
 
     QList<IContext *> m_activeContext;

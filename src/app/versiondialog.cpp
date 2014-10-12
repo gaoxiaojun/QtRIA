@@ -27,11 +27,9 @@
 **
 ****************************************************************************/
 
+#include "app_version.h"
 #include "versiondialog.h"
 
-#include <coreplugin/coreconstants.h>
-#include <coreplugin/icore.h>
-#include <utils/qtcassert.h>
 
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -40,36 +38,76 @@
 #include <QPushButton>
 #include <QApplication>
 #include <QtDebug>
-
-using namespace Core;
-using namespace Core::Internal;
+static QString compilerString()
+{
+#if defined(Q_CC_CLANG) // must be before GNU, because clang claims to be GNU too
+    QString isAppleString;
+#if defined(__apple_build_version__) // Apple clang has other version numbers
+    isAppleString = QLatin1String(" (Apple)");
+#endif
+    return QLatin1String("Clang " ) + QString::number(__clang_major__) + QLatin1Char('.')
+            + QString::number(__clang_minor__) + isAppleString;
+#elif defined(Q_CC_GNU)
+    return QLatin1String("GCC " ) + QLatin1String(__VERSION__);
+#elif defined(Q_CC_MSVC)
+    if (_MSC_VER >= 1800) // 1800: MSVC 2013 (yearly release cycle)
+        return QLatin1String("MSVC ") + QString::number(2008 + ((_MSC_VER / 100) - 13));
+    if (_MSC_VER >= 1500) // 1500: MSVC 2008, 1600: MSVC 2010, ... (2-year release cycle)
+        return QLatin1String("MSVC ") + QString::number(2008 + 2 * ((_MSC_VER / 100) - 15));
+#endif
+    return QLatin1String("<unknown compiler>");
+}
 
 VersionDialog::VersionDialog(QWidget *parent)
     : QDialog(parent)
 {
     // We need to set the window icon explicitly here since for some reason the
     // application icon isn't used when the size of the dialog is fixed (at least not on X11/GNOME)
-    QString iconPath = qApp->property("APPLICATION_ABOUT_ICON").toString();
-    setWindowIcon(QIcon(iconPath));
+    setWindowIcon(QIcon(QLatin1String(":/application/images/about.png")));
 
-    setWindowTitle(tr("About %1").arg(QCoreApplication::applicationName()));
+    setWindowTitle(tr("About %1").arg(Application::Constants::APP_NAME_STR));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     QGridLayout *layout = new QGridLayout(this);
     layout->setSizeConstraint(QLayout::SetFixedSize);
 
-    QLabel *copyRightLabel = new QLabel(qApp->property("APPLICATION_ABOUT").toString());
+    const QString versionString = tr("%1 %2").arg(Application::Constants::APP_NAME_STR,
+                                            Application::Constants::APP_VERSION_STR);
+    const QString buildCompatibilityString = tr("Based on Qt %1 (%2, %3 bit)").arg(QLatin1String(qVersion()),
+                                                                      compilerString(),
+                                                                      QString::number(QSysInfo::WordSize));
+    const QString ideRev = tr("From revision %1<br/>").arg(Application::Constants::APP_VERSION_PATCH);
+    const QString description = tr(
+       "<h3>%1</h3>"
+       "%2<br/>"
+       "<br/>"
+       "Built on %3 at %4<br />"
+       "<br/>"
+       "%5"
+       "<br/>"
+       "Copyright 2014 %6. All rights reserved.<br/>"
+       "<br/>"
+       "The program is provided AS IS with NO WARRANTY OF ANY KIND, "
+       "INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A "
+       "PARTICULAR PURPOSE.<br/>")
+       .arg(versionString,
+            buildCompatibilityString,
+            QLatin1String(__DATE__), QLatin1String(__TIME__),
+            ideRev,
+            QLatin1String(Application::Constants::APP_ORGNAME_STR));
+
+    QLabel *copyRightLabel = new QLabel(description);
     copyRightLabel->setWordWrap(true);
     copyRightLabel->setOpenExternalLinks(true);
     copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     QPushButton *closeButton = buttonBox->button(QDialogButtonBox::Close);
-    QTC_CHECK(closeButton);
+    //QTC_CHECK(closeButton);
     buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
     connect(buttonBox , SIGNAL(rejected()), this, SLOT(reject()));
 
     QLabel *logoLabel = new QLabel;
-    logoLabel->setPixmap(QPixmap(iconPath));
+    logoLabel->setPixmap(QPixmap(QLatin1String(":/application/images/about.png")));
     layout->addWidget(logoLabel , 0, 0, 1, 1);
     layout->addWidget(copyRightLabel, 0, 1, 4, 4);
     layout->addWidget(buttonBox, 4, 0, 1, 5);

@@ -21,7 +21,7 @@ set(LIB_SOURCES
     outputwindow.cpp
     vcsmanager.cpp
     statusbarmanager.cpp
-    versiondialog.cpp
+    #versiondialog.cpp
     editormanager/editormanager.cpp
     editormanager/editorview.cpp
     editormanager/documentmodel.cpp
@@ -177,7 +177,7 @@ set(LIB_HEADERS
     iversioncontrol.h
     ifilewizardextension.h
     icorelistener.h
-    versiondialog.h
+    #versiondialog.h
     core_global.h
     statusbarwidget.h
     coreplugin.h

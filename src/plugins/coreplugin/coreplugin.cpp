@@ -46,6 +46,7 @@
 #include <QtPlugin>
 #include <QDebug>
 #include <QDateTime>
+#include <QWidget>
 
 using namespace Core;
 using namespace Core::Internal;
@@ -120,6 +121,8 @@ void CorePlugin::extensionsInitialized()
     m_findPlugin->extensionsInitialized();
     m_locator->extensionsInitialized();
     m_mainWindow->extensionsInitialized();
+    connect(m_mainWindow, SIGNAL(showAboutApplication(QWidget*)),
+            this, SLOT(aboutApplication(QWidget*)));
 }
 
 bool CorePlugin::delayedInitialize()
@@ -128,6 +131,13 @@ bool CorePlugin::delayedInitialize()
     m_locator->delayedInitialize();
     return true;
 }
+
+
+void CorePlugin::aboutApplication(QWidget *parent)
+{
+    emit showAboutApplication(parent);
+}
+
 
 QObject *CorePlugin::remoteCommand(const QStringList & /* options */, const QStringList &args)
 {

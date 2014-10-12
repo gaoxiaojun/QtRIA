@@ -30,12 +30,12 @@
 #include "crashhandlersetup.h"
 
 #include "app_version.h"
+#include "qrcpapplication.h"
 
 #include <extensionsystem/iplugin.h>
 #include <extensionsystem/pluginerroroverview.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/pluginspec.h>
-#include <qtsingleapplication.h>
 #include <utils/hostosinfo.h>
 #include <utils/logging.h>
 
@@ -249,7 +249,7 @@ int main(int argc, char **argv)
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
     // Set Application Info
-    SharedTools::QtSingleApplication app(QCoreApplication::applicationName(), argc, argv);
+    QRcpApplication app(QCoreApplication::applicationName(), argc, argv);
 
     const int threadCount = QThreadPool::globalInstance()->maxThreadCount();
     QThreadPool::globalInstance()->setMaxThreadCount(qMax(8, 2 * threadCount));
@@ -264,12 +264,10 @@ int main(int argc, char **argv)
     QCoreApplication::setOrganizationDomain(QLatin1String(Application::Constants::APP_DOMAIN_STR));
     qApp->setProperty("APPLICATION_AUTHOR", QLatin1String(Application::Constants::APP_AUTHOR_STR));
     qApp->setProperty("APPLICATION_COMPACT_VERSION", QLatin1String(Application::Constants::APP_COMPACT_VERSION_STR));
-    qApp->setProperty("APPLICATION_VERSION_MAJOR", QLatin1String(Application::Constants::APP_VERSION_MAJOR));
+    /*qApp->setProperty("APPLICATION_VERSION_MAJOR", QLatin1String(Application::Constants::APP_VERSION_MAJOR));
     qApp->setProperty("APPLICATION_VERSION_MINOR", QLatin1String(Application::Constants::APP_VERSION_MINOR));
     qApp->setProperty("APPLICATION_VERSION_MICRO", QLatin1String(Application::Constants::APP_VERSION_MICRO));
-    qApp->setProperty("APPLICATION_VERSION_PATCH", QLatin1String(Application::Constants::APP_VERSION_PATCH));
-    qApp->setProperty("APPLICATION_ABOUT_ICON", QLatin1String(":/application/images/about.png"));
-    qApp->setProperty("APPLICATION_ABOUT", QString::fromLatin1("<h3>%1</h3>").arg(QCoreApplication::applicationName()));
+    qApp->setProperty("APPLICATION_VERSION_PATCH", QLatin1String(Application::Constants::APP_VERSION_PATCH));*/
 
     // Manually determine -settingspath command line option
     // We can't use the regular way of the plugin manager, because that needs to parse pluginspecs
@@ -477,6 +475,9 @@ int main(int argc, char **argv)
 
     QObject::connect(&app, SIGNAL(fileOpenRequest(QString)), coreplugin->plugin(),
                      SLOT(fileOpenRequest(QString)));
+
+    QObject::connect(coreplugin->plugin(), SIGNAL(showAboutApplication(QWidget*)),
+                     &app, SLOT(showAboutApplication(QWidget*)));
 
     // quit when last window (relevant window, see WA_QuitOnClose) is closed
     // this should actually be the default, but doesn't work in Qt 5

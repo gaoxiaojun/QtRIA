@@ -14,6 +14,10 @@ set(APP_SOURCES
     qtlockedfile.cpp
     qtlocalpeer.cpp
     qtsingleapplication.cpp
+    qrcpapplication.h
+    qrcpapplication.cpp
+    versiondialog.cpp
+    versiondialog.h
 )
 
 set(APP_RESOURCES

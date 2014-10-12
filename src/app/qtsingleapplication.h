@@ -26,6 +26,8 @@
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ****************************************************************************/
+#ifndef QT_SINGLE_APPLICATION_H
+#define QT_SINGLE_APPLICATION_H
 
 #include <QApplication>
 
@@ -72,3 +74,5 @@ private:
 };
 
 } // namespace SharedTools
+
+#endif

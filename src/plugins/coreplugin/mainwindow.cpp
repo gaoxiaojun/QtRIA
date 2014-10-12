@@ -43,7 +43,6 @@
 #include "plugindialog.h"
 #include "vcsmanager.h"
 #include "variablemanager.h"
-#include "versiondialog.h"
 #include "statusbarmanager.h"
 #include "id.h"
 #include "manhattanstyle.h"
@@ -121,7 +120,7 @@ MainWindow::MainWindow() :
     m_modeStack(new FancyTabWidget(this)),
     m_navigationWidget(0),
     m_rightPaneWidget(0),
-    m_versionDialog(0),
+    //m_versionDialog(0),
     m_generalSettings(new GeneralSettings),
     m_shortcutSettings(new ShortcutSettings),
     m_mimeTypeSettings(new MimeTypeSettings),
@@ -142,7 +141,7 @@ MainWindow::MainWindow() :
 
     Utils::HistoryCompleter::setSettings(PluginManager::settings());
 
-    setWindowTitle(tr("Qt Creator"));
+    setWindowTitle(tr("%1").arg(QCoreApplication::applicationName()));
     if (!Utils::HostOsInfo::isMacHost())
         QApplication::setWindowIcon(QIcon(QLatin1String(Constants::ICON_QTLOGO_128)));
 
@@ -676,9 +675,9 @@ void MainWindow::registerDefaultActions()
     // About Application Action
     icon = QIcon::fromTheme(QLatin1String("help-about"));
     if (Utils::HostOsInfo::isMacHost())
-        tmpaction = new QAction(icon, tr("About &Qt Creator"), this); // it's convention not to add dots to the about menu
+        tmpaction = new QAction(icon, tr("About &%1").arg(QCoreApplication::applicationName()), this); // it's convention not to add dots to the about menu
     else
-        tmpaction = new QAction(icon, tr("About &Qt Creator..."), this);
+        tmpaction = new QAction(icon, tr("About &%1...").arg(QCoreApplication::applicationName()), this);
     cmd = ActionManager::registerAction(tmpaction, Constants::ABOUT_QTCREATOR, globalContext);
     if (Utils::HostOsInfo::isMacHost())
         cmd->action()->setMenuRole(QAction::ApplicationSpecificRole);
@@ -1051,20 +1050,7 @@ void MainWindow::openRecentFile()
 
 void MainWindow::aboutApplication()
 {
-    if (!m_versionDialog) {
-        m_versionDialog = new VersionDialog(this);
-        connect(m_versionDialog, SIGNAL(finished(int)),
-                this, SLOT(destroyVersionDialog()));
-    }
-    m_versionDialog->show();
-}
-
-void MainWindow::destroyVersionDialog()
-{
-    if (m_versionDialog) {
-        m_versionDialog->deleteLater();
-        m_versionDialog = 0;
-    }
+    emit showAboutApplication(this);
 }
 
 void MainWindow::aboutPlugins()

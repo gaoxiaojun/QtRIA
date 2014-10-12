@@ -32,6 +32,10 @@
 
 #include <extensionsystem/iplugin.h>
 
+QT_BEGIN_NAMESPACE
+class QWidget;
+QT_END_NAMESPACE
+
 namespace Core {
 
 class DesignMode;
@@ -58,8 +62,12 @@ public:
     ShutdownFlag aboutToShutdown();
     QObject *remoteCommand(const QStringList & /* options */, const QStringList &args);
 
+signals:
+    void showAboutApplication(QWidget *parnet);
+
 public slots:
     void fileOpenRequest(const QString&);
+    void aboutApplication(QWidget *parent);
 
 private slots:
 #if defined(WITH_TESTS)
