@@ -2,18 +2,7 @@ QtRCP
 ==========
 QtRCP is a cross-platform rich client platform base on Qt & Qt Creator.
 
-Supported Platforms
+Require
 ===================
-The standalone binary packages support the following platforms:
-
-Windows XP SP3 or later
-(K)Ubuntu Linux 11.10 (32-bit and 64-bit) or later
-Mac OS X 10.7 or later
-
-Prerequisites:
-   * Qt 5.3.1 or later (with restrictions also Qt 4.8.x)
+   * Qt 5.3 or later
    * CMake 3.0.2 or later
-   * On Windows:
-     -  MinGW with g++ 4.5 or Visual Studio 2010 or later
-   * On Mac OS X: latest Xcode
-   * On Linux: g++ 4.5 or later
